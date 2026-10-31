@@ -1,0 +1,9 @@
+// Cloudflare Workers config: serve the public/ folder as static files.
+// The name must match the Worker's name in the Cloudflare dashboard.
+{
+  "name": "bogman-pygmy-habitat",
+  "compatibility_date": "2025-10-01",
+  "assets": {
+    "directory": "./public"
+  }
+}

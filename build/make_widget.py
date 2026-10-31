@@ -5,7 +5,7 @@
 """
 import os, re, json, html
 HERE = os.path.dirname(os.path.abspath(__file__)); ROOT = os.path.join(HERE, '..')
-SITE = os.environ.get('BPS_SITE_URL', 'https://bogman-pygmy-habitat.pages.dev/')   # Cloudflare Pages URL
+SITE = os.environ.get('BPS_SITE_URL', 'https://bogman-pygmy-habitat.bogman-plantenstein.workers.dev/')   # Cloudflare Pages URL
 
 src = open(os.path.join(ROOT, 'src', 'widget.html')).read()
 markup = src.split('<style>')[0].strip()
