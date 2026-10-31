@@ -43,7 +43,7 @@
       <li>Rainfall, monthly highs and lows: <a href="http://www.bom.gov.au/climate/averages/" target="_blank" rel="noopener">Australian Bureau of Meteorology</a> long-term averages from 27 stations, weighted to each species' records.</li>
       <li>Dry months: months where average rainfall (mm) is less than twice the average temperature (°C), the standard Bagnouls–Gaussen test. 5–6 dry months is a dry summer; 7 or more is a long, dry summer.</li>
       <li>Climate uses research-grade records only, inside the species' native range.</li>
-      <li>Flowers: colour and flowering months from <a href="https://florabase.dbca.wa.gov.au/" target="_blank" rel="noopener">FloraBase</a> (WA Herbarium descriptive catalogue) and Fierce Flora; petal lengths from published species descriptions where available. Size classes use petal length (small under 4 mm, medium 4–7 mm, large over 7 mm) or, where only a flower width is published, small under 10 mm, medium 10–16 mm, large over 16 mm. Species without a published measurement are left out of the size filter.</li>
+      <li>Flowers: colours and markings reviewed by Bogman Plantenstein against FloraBase, Fierce Flora and published descriptions; flowering months from <a href="https://florabase.dbca.wa.gov.au/" target="_blank" rel="noopener">FloraBase</a> (WA Herbarium descriptive catalogue) and Fierce Flora; petal lengths from published species descriptions where available. Size classes use petal length (small under 4 mm, medium 4–7 mm, large over 7 mm) or, where only a flower width is published, small under 10 mm, medium 10–16 mm, large over 16 mm. Species without a published measurement are left out of the size filter.</li>
       <li>Photos: cultivated plants from the <a href="https://www.burymeinthebog.com/species" target="_blank" rel="noopener">Bogman Gallery</a>. Wild photos load from iNaturalist, credited to each photographer; only openly licensed photos (CC0, CC BY, CC BY-SA) are shown.</li>
     </ul>
   </details>
@@ -326,9 +326,10 @@ details.bps-seo a{color:#e9b949}
   }
 
   function start(root, D){
-    var T = D.taxa, M = D.map, sel = null, view = "shelf", cellSel = null, GAL = {}, INAT = {}, FL = {}, fColor = null, fSize = null;
-    var COLORS = [["white","White","#f4efe2"],["pink","Pink","#e98fb2"],["red","Red","#cf4a3c"],["orange","Orange","#ef8a35"],["yellow","Yellow","#ecd25b"]];
+    var T = D.taxa, M = D.map, sel = null, view = "shelf", cellSel = null, GAL = {}, INAT = {}, FL = {}, fColor = null, fSize = null, fMark = null;
+    var COLORS = [["white","White","#f4efe2"],["pink","Pink","#e98fb2"],["red","Red","#cf4a3c"],["orange","Orange","#ef8a35"],["yellow","Yellow","#ecd25b"],["purple","Purple","#a56cc8"]];
     var SIZES = [["S","Small",6],["M","Medium",9],["L","Large",12]];
+    var MARKS = [["dark","Dark centre"],["two","Two-tone"],["spot","Basal spot"],["streak","Streaks or veins"]];
     var unit = pickUnit();
     var $ = function(s){return root.querySelector(s);};
     var shelf=$("#bps-shelf"), plot=$("#bps-plot"), det=$("#bps-detail"), q=$("#bps-q"), mapEl=$("#bps-map"), side=$("#bps-mapside"), filt=$("#bps-filter"), resetB=$("#bps-reset"), flowEl=$("#bps-flowers");
@@ -361,7 +362,7 @@ details.bps-seo a{color:#e9b949}
       return keys.some(function(k){return norm(k).indexOf(v)>-1;});
     }
     function find(id){ for(var i=0;i<T.length;i++) if(T[i].id===id) return T[i]; }
-    function fOk(x){ var f=FL[x.id]; if(fColor && !(f && f.colors.indexOf(fColor)>-1)) return false; if(fSize && !(f && f.size===fSize)) return false; return true; }
+    function fOk(x){ var f=FL[x.id]; if(fColor && !(f && f.colors.indexOf(fColor)>-1)) return false; if(fSize && !(f && f.size===fSize)) return false; if(fMark && !(f && f.traits.indexOf(fMark)>-1)) return false; return true; }
     function visible(x, v){ return matchQ(x, v===undefined ? norm(q.value) : v) && fOk(x); }
 
     // ---- flowers (public/flowers.csv; edit that file to add data)
@@ -383,7 +384,7 @@ details.bps-seo a{color:#e9b949}
           var pe=rng(o.petal_mm), di=rng(o.diameter_mm), size=null, mid;
           if(pe){ mid=(pe[0]+pe[1])/2; size = mid<4?"S":mid<=7?"M":"L"; }
           else if(di){ mid=(di[0]+di[1])/2; size = mid<10?"S":mid<=16?"M":"L"; }
-          FL[o.id]={colors:(o.colors||"").toLowerCase().split(/[;,\/]/).map(function(c){return c.trim();}).filter(Boolean), note:o.color_note, months:o.months, petal:pe, petalRaw:o.petal_mm, diam:di, sizeNote:o.size_note, src:o.source, size:size};
+          FL[o.id]={traits:(o.traits||"").toLowerCase().split(/[;, ]+/).filter(Boolean), colors:(o.colors||"").toLowerCase().split(/[;,\/]/).map(function(c){return c.trim();}).filter(Boolean), note:o.color_note, months:o.months, petal:pe, petalRaw:o.petal_mm, diam:di, sizeNote:o.size_note, src:o.source, size:size};
         });
         buildFlowerRow(); applyDim(); drawMap(); if(sel) renderDetail(find(sel), true);
       }).catch(function(){});
@@ -393,10 +394,11 @@ details.bps-seo a{color:#e9b949}
       function grp(label, items, cur, set){
         var g=el("div","bps-fgrp"); g.appendChild(el("span",null,label));
         items.forEach(function(it){
-          var n=T.filter(function(x){ var f=FL[x.id]; return f && (label==="Size" ? f.size===it[0] : f.colors.indexOf(it[0])>-1); }).length;
-          if(!n && label==="Size") return; any=any||n>0;
+          var n=T.filter(function(x){ var f=FL[x.id]; return f && (label==="Size" ? f.size===it[0] : label==="Markings" ? f.traits.indexOf(it[0])>-1 : f.colors.indexOf(it[0])>-1); }).length;
+          if(!n) return; any=true;
           var b=el("button"); b.type="button"; b.setAttribute("aria-pressed",String(cur===it[0])); b.disabled=!n;
           if(label==="Size"){ var d0=el("i","bps-fsz"); d0.style.width=d0.style.height=it[2]+"px"; b.appendChild(d0); }
+          else if(label==="Markings"){ b.appendChild(markIcon(it[0])); }
           else { var d=el("i","bps-fdot"); d.style.background=it[2]; b.appendChild(d); }
           b.appendChild(document.createTextNode(it[1])); b.appendChild(el("small",null,String(n)));
           b.addEventListener("click",function(){ set(cur===it[0]?null:it[0]); buildFlowerRow(); refresh(); track("flower_filter", label+":"+it[0]); });
@@ -405,13 +407,24 @@ details.bps-seo a{color:#e9b949}
         if(g.children.length>1) flowEl.appendChild(g);
       }
       grp("Flower", COLORS, fColor, function(v){ fColor=v; });
+      grp("Markings", MARKS, fMark, function(v){ fMark=v; });
       grp("Size", SIZES, fSize, function(v){ fSize=v; });
       flowEl.hidden=!any;
     }
+    function markIcon(k){ // tiny 5-petal flower showing the marking
+      var s0=document.createElementNS(NS,"svg"); s0.setAttribute("viewBox","-10 -10 20 20"); s0.setAttribute("width","14"); s0.setAttribute("height","14"); s0.setAttribute("aria-hidden","true");
+      for(var i=0;i<5;i++){ var a=i*72-90, g=sv(s0,"g",{transform:"rotate("+a+")"});
+        sv(g,"ellipse",{cx:5.2,cy:0,rx:4.6,ry:3,fill:k==="two"?"#ecd25b":"#f1ead7"});
+        if(k==="two") sv(g,"ellipse",{cx:3,cy:0,rx:2.3,ry:2.2,fill:"#f1ead7"});
+        if(k==="spot") sv(g,"circle",{cx:3.4,cy:0,r:1.3,fill:"#d6457a"});
+        if(k==="streak") sv(g,"line",{x1:1.5,y1:0,x2:8.5,y2:0,stroke:"#c9573a","stroke-width":.9}); }
+      sv(s0,"circle",{r:k==="dark"?3.6:1.8,fill:k==="dark"?"#1d130e":"#c9b98d"});
+      return s0;
+    }
     function refresh(){ applyDim(); drawMap(); if(view==="plot") drawPlot(); updateReset(); }
-    function updateReset(){ resetB.hidden = !(sel || cellSel || fColor || fSize || q.value); }
+    function updateReset(){ resetB.hidden = !(sel || cellSel || fColor || fSize || fMark || q.value); }
     function clearAll(){
-      q.value=""; fColor=fSize=null; cellSel=null; filt.hidden=true; root.classList.remove("is-wide");
+      q.value=""; fColor=fSize=fMark=null; cellSel=null; filt.hidden=true; root.classList.remove("is-wide");
       if(sel){ setSel(null); emptyDetail(); det.classList.remove("is-open"); }
       buildFlowerRow(); refresh();
     }
@@ -761,7 +774,11 @@ details.bps-seo a{color:#e9b949}
       if(fl && (fl.colors.length || fl.petal || fl.diam || fl.months)){
         var fs=el("span","bps-fl");
         fl.colors.forEach(function(c){ var cc=COLORS.filter(function(z){return z[0]===c;})[0]; if(!cc) return; var it=el("i"), dt=el("span","bps-fdot"); dt.style.background=cc[2]; it.appendChild(dt); it.appendChild(document.createTextNode(cc[1])); fs.appendChild(it); });
-        var bits=[]; if(fl.note) bits.push(fl.note.charAt(0).toUpperCase()+fl.note.slice(1));
+        var bits=[], ML={dark:"dark centre",two:"two-tone petals",spot:"spot at petal base",streak:"streaks or veins"};
+        var mk=fl.traits.filter(function(t){return ML[t];}).map(function(t){return ML[t];});
+        if(mk.length) bits.push(mk.join(", ").replace(/^./,function(c){return c.toUpperCase();}));
+        if(fl.traits.indexOf("varies")>-1) bits.push("colour varies between forms");
+        if(fl.note && !mk.length) bits.push(fl.note.charAt(0).toUpperCase()+fl.note.slice(1));
         if(fl.petal) bits.push("petals "+(fl.petalRaw.charAt(0)==="-" ? "up to "+fl.petal[1] : fl.petal[0]===fl.petal[1] ? fl.petal[0] : fl.petal[0]+"–"+fl.petal[1])+" mm long");
         if(fl.diam) bits.push((fl.sizeNote&&/approx/.test(fl.sizeNote)?"about ":"")+(fl.diam[0]===fl.diam[1]?fl.diam[0]:fl.diam[0]+"–"+fl.diam[1])+" mm across");
         if(fl.months) bits.push("blooms "+fl.months.replace("-","–")+" in habitat");
@@ -953,7 +970,7 @@ details.bps-seo a{color:#e9b949}
     document.addEventListener("keydown",function(e){ if(e.key!=="Escape" || document.querySelector(".bps-lb")) return;
       if(det.classList.contains("is-open") && window.matchMedia("(max-width:860px)").matches && !root.classList.contains("is-wide")){ closeSheet(); return; }
       if(root.classList.contains("is-wide")){ root.classList.remove("is-wide"); if(sel) renderDetail(find(sel),true); return; }
-      if(sel||cellSel||fColor||fSize||q.value) clearAll(); });
+      if(sel||cellSel||fColor||fSize||fMark||q.value) clearAll(); });
     var ty=null;
     det.addEventListener("touchstart",function(e){ ty = (det.scrollTop<=0 && !(e.target.closest && e.target.closest(".bps-stage,.bps-thumbs,.bps-forms"))) ? e.touches[0].clientY : null; },{passive:true});
     det.addEventListener("touchend",function(e){ if(ty!=null && e.changedTouches[0].clientY-ty>70) closeSheet(); ty=null; },{passive:true});

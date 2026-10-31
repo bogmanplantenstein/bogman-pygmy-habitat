@@ -1,59 +1,59 @@
-id,colors,color_note,months,petal_mm,diameter_mm,size_note,source
-albonotata,orange,"orange, white patches at petal base",Sep-Oct,7-12,,,Robinson et al. 2018 (Phytotaxa 346)
-allantostigma,white,,Nov-Dec,,,,FloraBase
-androsacea,pink;white,"white to light pink, pink streaks",Sep-Oct,,,,FloraBase; Fierce Flora
-australis,white,"white, usually with pink streaks",,,,,Fierce Flora
-barbigera,orange;red,"metallic orange, black centre",Aug-Oct,,,described as large,FloraBase; Fierce Flora
-bindoon,orange,"metallic orange, black centre",,,15,approx.,Fierce Flora
-callistos,orange,"metallic orange, black centre",Oct-Nov,,20,approx.,FloraBase; Fierce Flora
-citrina,yellow,"lemon yellow, white inner half",Oct,,,,FloraBase; Fierce Flora
-closterostigma,white;pink,,Oct-Nov,,,,FloraBase
-coomallo,orange,"metallic orange, black centre",,,15,approx.,Fierce Flora
-depauperata,,,,,,,
-dichrosepala,white;pink,,Sep-Oct,,,,FloraBase
-echinoblastus,orange,,Oct-Nov,,,,FloraBase
-eneabba,white;pink,"darker pink spot on each petal",Oct-Nov,,,,FloraBase; Fierce Flora
-enodes,white,,Sep-Nov,,,,FloraBase
-gibsonii,pink,,,,,,Fierce Flora
-grievei,white,,Sep,,,,FloraBase
-helodes,pink,,Oct-Nov,,,,FloraBase
-hyperostigma,orange,"orange, black centre",Oct-Nov,6-7,,,FloraBase; Robinson et al. 2018 (key)
-lasiantha,pink,,Nov,,,,FloraBase
-leioblastus,white,,Sep-Dec,,,,FloraBase
-leucoblasta,orange;white;pink;red,"usually orange; centre red to black",Aug-Nov,,20,"approx., about the rosette's width",FloraBase; Fierce Flora
-leucostigma,white,,Nov-Jan,,,,FloraBase
-mannii,pink,,Jun-Sep,,,,FloraBase
-micra,,,Jan-Feb,,,,Type label (Lowrie & Conran 2014)
-micrantha,,,,,,,
-microscapa,white,,,,,,FloraBase
-miniata,orange,"metallic orange, black centre",Oct,,20,"approx., up to",FloraBase; Fierce Flora
-minutiflora,,,,,,,
-nitidula,white,,Nov-Jan,,,,FloraBase
-nivea,white,,Sep,,,,FloraBase
-occidentalis,pink;white,,Oct-Jan,,,,FloraBase
-omissa,white;pink,,Oct-Dec,,,,FloraBase
-oreopodion,white,,Sep-Oct,,,,FloraBase
-paleacea,white,white to cream,Sep-Jan,,,,FloraBase
-patens,white,,Dec-Feb,,,,FloraBase
-pedicellaris,white,"white, green at petal base",Oct-Nov,2.8-3.5,,,FloraBase; Lowrie 2002 (Nuytsia 15)
-platystigma,orange,"metallic orange, black centre and veins",Oct-Dec,,,,FloraBase; Fierce Flora
-pulchella,pink;white;orange,,Nov-Jan,-6,,"6 mm or less",FloraBase; Robinson et al. 2018 (key)
-pycnoblasta,white;pink,,Sep-Nov,,,,FloraBase
-pygmaea,white,usually 4 petals,,,,,FloraBase; Fierce Flora
-rechingeri,yellow,,Sep-Oct,,,,FloraBase
-roseana,white,,Oct-Nov,,,,FloraBase
-sargentii,white,,Nov-Dec,,,,FloraBase
-scorpioides,white;pink,,Aug-Oct,,,,FloraBase
-sewelliae,orange,"metallic orange, black centre",Oct,8-10,20,"diameter approx., up to",FloraBase; Robinson et al. 2018 (key); Fierce Flora
-silvicola,pink,"glossy pink, dark centre",Nov,,,,FloraBase; Fierce Flora
-spilos,white;pink,,Oct-Nov,,,,FloraBase
-stelliflora,white,,Nov,,,,FloraBase
-trichocaulis,,,,,,,
-verrucata,,,,,,,
-walyunga,white;pink,,Oct-Nov,,,,FloraBase
-x-badgerupii,yellow,yellow-green,,,,,FloraBase
-x-badgingarra,,,,,,,
-x-carbarup,,,,,,,
-x-legrandii,,,,,,,
-x-pingellyensis,,,,,,,
-x-sidjamesii,pink,green-pink,Nov-Mar,,,,FloraBase
+id,colors,traits,color_note,months,petal_mm,diameter_mm,size_note,source
+albonotata,orange,dark;two,"orange, white patches at petal base",Sep-Oct,7-12,,,Colours/markings: Bogman review Oct 2026; Robinson et al. 2018 (Phytotaxa 346)
+allantostigma,white,,,Nov-Dec,,,,Colours/markings: Bogman review Oct 2026; FloraBase
+androsacea,pink;white,,"white to light pink, pink streaks",Sep-Oct,,,,Colours/markings: Bogman review Oct 2026; FloraBase; Fierce Flora
+australis,pink;white,varies,,,,,,Colours/markings: Bogman review Oct 2026; Fierce Flora
+barbigera,orange,dark,"metallic orange, black centre",Aug-Oct,,,described as large,Colours/markings: Bogman review Oct 2026; FloraBase; Fierce Flora
+bindoon,orange,dark,"metallic orange, black centre",,,15,approx.,Colours/markings: Bogman review Oct 2026; Fierce Flora
+callistos,orange,dark,"metallic orange, black centre",Oct-Nov,,20,approx.,Colours/markings: Bogman review Oct 2026; FloraBase; Fierce Flora
+citrina,white;yellow,two,"lemon yellow, white inner half",Oct,,,,Colours/markings: Bogman review Oct 2026; FloraBase; Fierce Flora
+closterostigma,white,spot,,Oct-Nov,,,,Colours/markings: Bogman review Oct 2026; FloraBase
+coomallo,orange,dark,"metallic orange, black centre",,,15,approx.,Colours/markings: Bogman review Oct 2026; Fierce Flora
+depauperata,pink,,,,,,,Colours/markings: Bogman review Oct 2026
+dichrosepala,pink;white,,,Sep-Oct,,,,Colours/markings: Bogman review Oct 2026; FloraBase
+echinoblastus,orange,,,Oct-Nov,,,,Colours/markings: Bogman review Oct 2026; FloraBase
+eneabba,pink;red;white,spot;two,darker pink spot on each petal,Oct-Nov,,,,Colours/markings: Bogman review Oct 2026; FloraBase; Fierce Flora
+enodes,white,,,Sep-Nov,,,,Colours/markings: Bogman review Oct 2026; FloraBase
+gibsonii,pink,,,,,,,Colours/markings: Bogman review Oct 2026; Fierce Flora
+grievei,white,,,Sep,,,,Colours/markings: Bogman review Oct 2026; FloraBase
+helodes,pink;white,spot,,Oct-Nov,,,,Colours/markings: Bogman review Oct 2026; FloraBase
+hyperostigma,orange,dark,"orange, black centre",Oct-Nov,6-7,,,Colours/markings: Bogman review Oct 2026; FloraBase; Robinson et al. 2018 (key)
+lasiantha,pink,,,Nov,,,,Colours/markings: Bogman review Oct 2026; FloraBase
+leioblastus,white,,,Sep-Dec,,,,Colours/markings: Bogman review Oct 2026; FloraBase
+leucoblasta,orange,dark;varies,usually orange; centre red to black,Aug-Nov,,20,"approx., about the rosette's width",Colours/markings: Bogman review Oct 2026; FloraBase; Fierce Flora
+leucostigma,white,,,Nov-Jan,,,,Colours/markings: Bogman review Oct 2026; FloraBase
+mannii,pink;white,,,Jun-Sep,,,,Colours/markings: Bogman review Oct 2026; FloraBase
+micra,white,,,Jan-Feb,,,,Colours/markings: Bogman review Oct 2026; Type label (Lowrie & Conran 2014)
+micrantha,white,,,,,,,Colours/markings: Bogman review Oct 2026
+microscapa,white,,,,,,,Colours/markings: Bogman review Oct 2026; FloraBase
+miniata,orange,dark,"metallic orange, black centre",Oct,,20,"approx., up to",Colours/markings: Bogman review Oct 2026; FloraBase; Fierce Flora
+minutiflora,white,spot,,,,,,Colours/markings: Bogman review Oct 2026
+nitidula,white,,,Nov-Jan,,,,Colours/markings: Bogman review Oct 2026; FloraBase
+nivea,white,,,Sep,,,,Colours/markings: Bogman review Oct 2026; FloraBase
+occidentalis,pink;white,varies,,Oct-Jan,,,,Colours/markings: Bogman review Oct 2026; FloraBase
+omissa,pink;white,varies,,Oct-Dec,,,,Colours/markings: Bogman review Oct 2026; FloraBase
+oreopodion,white,,,Sep-Oct,,,,Colours/markings: Bogman review Oct 2026; FloraBase
+paleacea,white,,white to cream,Sep-Jan,,,,Colours/markings: Bogman review Oct 2026; FloraBase
+patens,white,,,Dec-Feb,,,,Colours/markings: Bogman review Oct 2026; FloraBase
+pedicellaris,white,varies;spot,"white, green at petal base",Oct-Nov,2.8-3.5,,,Colours/markings: Bogman review Oct 2026; FloraBase; Lowrie 2002 (Nuytsia 15)
+platystigma,orange,dark;varies,"metallic orange, black centre and veins",Oct-Dec,,,,Colours/markings: Bogman review Oct 2026; FloraBase; Fierce Flora
+pulchella,orange;pink;red;white,two;varies,,Nov-Jan,-6,,6 mm or less,Colours/markings: Bogman review Oct 2026; FloraBase; Robinson et al. 2018 (key)
+pycnoblasta,pink;white,spot,,Sep-Nov,,,,Colours/markings: Bogman review Oct 2026; FloraBase
+pygmaea,white,,usually 4 petals,,,,,Colours/markings: Bogman review Oct 2026; FloraBase; Fierce Flora
+rechingeri,white,,,Sep-Oct,,,,Colours/markings: Bogman review Oct 2026; FloraBase
+roseana,white,,,Oct-Nov,,,,Colours/markings: Bogman review Oct 2026; FloraBase
+sargentii,white,,,Nov-Dec,,,,Colours/markings: Bogman review Oct 2026; FloraBase
+scorpioides,pink;white,varies,,Aug-Oct,,,,Colours/markings: Bogman review Oct 2026; FloraBase
+sewelliae,orange,dark,"metallic orange, black centre",Oct,8-10,20,"diameter approx., up to",Colours/markings: Bogman review Oct 2026; FloraBase; Robinson et al. 2018 (key); Fierce Flora
+silvicola,pink,dark;two,"glossy pink, dark centre",Nov,,,,Colours/markings: Bogman review Oct 2026; FloraBase; Fierce Flora
+spilos,pink;white,varies;two;spot,,Oct-Nov,,,,Colours/markings: Bogman review Oct 2026; FloraBase
+stelliflora,white,,,Nov,,,,Colours/markings: Bogman review Oct 2026; FloraBase
+trichocaulis,white,,,,,,,Colours/markings: Bogman review Oct 2026
+verrucata,white,,,,,,,Colours/markings: Bogman review Oct 2026
+walyunga,pink;white;orange,varies,,Oct-Nov,,,,Colours/markings: Bogman review Oct 2026; FloraBase
+x-badgerupii,white,,,,,,,Colours/markings: Bogman review Oct 2026; FloraBase
+x-badgingarra,white,,,,,,,Colours/markings: Bogman review Oct 2026
+x-carbarup,pink,,,,,,,Colours/markings: Bogman review Oct 2026
+x-legrandii,white,,,,,,,Colours/markings: Bogman review Oct 2026
+x-pingellyensis,white,,,,,,,Colours/markings: Bogman review Oct 2026
+x-sidjamesii,white,,,Nov-Mar,,,,Colours/markings: Bogman review Oct 2026; FloraBase

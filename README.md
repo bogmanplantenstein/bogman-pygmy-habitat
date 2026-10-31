@@ -31,7 +31,8 @@ Photos come from two places, read live in the visitor's browser. Nothing is copi
 
 | column | what to put |
 |---|---|
-| `colors` | any of `white`, `pink`, `red`, `orange`, `yellow`, separated by `;` (e.g. `pink;white;orange`) |
+| `colors` | any of `white`, `pink`, `red`, `orange`, `yellow`, `purple`, separated by `;` (e.g. `pink;white;orange`). A colour chip only appears once at least one species uses it. |
+| `traits` | markings: `dark` (dark centre), `two` (two-tone petals), `spot` (spot at petal base), `streak` (streaks or veins), `varies` (colour varies by form; shown in the panel, not a filter) |
 | `color_note` | short description shown in the panel, e.g. `metallic orange, black centre` |
 | `months` | flowering months in habitat, e.g. `Oct-Nov` |
 | `petal_mm` | published petal length in mm: `7-12`, `3`, or `-6` for "6 mm or less" |
