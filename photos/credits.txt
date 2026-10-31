@@ -1,4 +1,0 @@
-# Optional photo credits. One per line: <filename>: <name>
-# Photos without a line here are credited "Bogman Plantenstein".
-# Example:
-# roseana-2.jpg: Jane Smith

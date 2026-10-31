@@ -14,23 +14,24 @@ def drymetrics(s):
     T=[(a+b)/2 for a,b in zip(s['monthlyHi'],s['monthlyLo'])]; P=s['precip']
     dry=[m for m in range(12) if P[m]<2*T[m]]
     return len(dry), round(sum(2*T[m]-P[m] for m in dry))
-out={}; dropped=[]
-for i,n in name.items():
-    p=n.split(' ',1)
-    if len(p)<2 or (p[1] not in PYG and p[1] not in HYB): continue
-    ep=p[1]; allo=[o for o in obs if o[3]==i]
-    keep=[]
-    for o in allo:
-        if o[5]&1: continue                                   # needs_id
-        if not (ep=='pygmaea' or inWA(o[1],o[2])): dropped.append((n,o[1],o[2],'outside WA')); continue
-        if excluded(n,o): dropped.append((n,o[1],o[2],'outside published range')); continue
-        keep.append(o)
-    s=stats({key(o[1],o[2]) for o in keep}) if keep else None
-    if s: s['dryMo'],s['deficit']=drymetrics(s)
-    out[ep]=dict(taxon_id=tid[i],nAll=len(allo),nKeep=len(keep),obsc=sum(1 for o in keep if o[5]&2),filt=s)
-# D. micra: single type-locality cell (not in the map's records)
-s=stats({key(-31.8557,115.9124)}); s['dryMo'],s['deficit']=drymetrics(s)
-out['micra']=dict(taxon_id=None,nAll=0,nKeep=1,obsc=0,filt=s)
-json.dump(out,open(os.path.join(WORK,'mapclim_out.json'),'w'))
-print('dropped:',len(dropped)); [print('  ',d) for d in dropped]
-o=out['occidentalis']['filt']; print('occidentalis now: p90',o['hotTypical'],'dryMo',o['dryMo'],'cells',o['n'])
+if __name__=='__main__':
+    out={}; dropped=[]
+    for i,n in name.items():
+        p=n.split(' ',1)
+        if len(p)<2 or (p[1] not in PYG and p[1] not in HYB): continue
+        ep=p[1]; allo=[o for o in obs if o[3]==i]
+        keep=[]
+        for o in allo:
+            if o[5]&1: continue                                   # needs_id
+            if not (ep=='pygmaea' or inWA(o[1],o[2])): dropped.append((n,o[1],o[2],'outside WA')); continue
+            if excluded(n,o): dropped.append((n,o[1],o[2],'outside published range')); continue
+            keep.append(o)
+        s=stats({key(o[1],o[2]) for o in keep}) if keep else None
+        if s: s['dryMo'],s['deficit']=drymetrics(s)
+        out[ep]=dict(taxon_id=tid[i],nAll=len(allo),nKeep=len(keep),obsc=sum(1 for o in keep if o[5]&2),filt=s)
+    # D. micra: single type-locality cell (not in the map's records)
+    s=stats({key(-31.8557,115.9124)}); s['dryMo'],s['deficit']=drymetrics(s)
+    out['micra']=dict(taxon_id=None,nAll=0,nKeep=1,obsc=0,filt=s)
+    json.dump(out,open(os.path.join(WORK,'mapclim_out.json'),'w'))
+    print('dropped:',len(dropped)); [print('  ',d) for d in dropped]
+    o=out['occidentalis']['filt']; print('occidentalis now: p90',o['hotTypical'],'dryMo',o['dryMo'],'cells',o['n'])

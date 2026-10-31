@@ -11,7 +11,14 @@ Habitat descriptions in this dataset are paraphrased summaries written for Bogma
 - Robinson, A.S., Cross, A.T., Meisterl, M. & Fleischmann, A. (2018). *Drosera albonotata*. *Phytotaxa* 346(3): 221–236. https://doi.org/10.11646/phytotaxa.346.3.2
 - Krueger, T.A. & Fleischmann, A. (2020). When three become two: *Drosera coalara* links *Drosera citrina* with *Drosera nivea*. *Carnivorous Plant Newsletter* 49(1): 6–16.
 
-## Cultivation reports (summer dormancy flag)
+## Map
+- Beck, H.E. et al. (2023). High-resolution (1 km) Köppen-Geiger maps for 1901–2099 based on constrained CMIP6 projections. *Scientific Data* 10: 724. https://doi.org/10.1038/s41597-023-02549-6 (CC BY 4.0). 1991–2020 map, recoloured and cropped.
+
+## Photos
+- Cultivated plants: Bogman Plantenstein (Bogman Gallery).
+- Wild plants: iNaturalist photographers, credited on each photo; CC0, CC BY and CC BY-SA licences only. Loaded live from iNaturalist, not stored here.
+
+## Cultivation reports (summer dormancy flag, currently not displayed)
 - Terraforums grower threads: "Pygmy sundews that have a summer dormancy", "Pygmies dormant now", "Pygmy summer survival tips", "Pygmy Drosera aestivation". Anecdotal reports.
 
 ## Climate

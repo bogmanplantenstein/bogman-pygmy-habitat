@@ -1,22 +1,30 @@
 <div class="bps" id="bps-root">
-  <div class="bps-top">
-    <label class="bps-search" for="bps-q">
-      <svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="8.5" cy="8.5" r="5.5"/><path d="M13 13l4 4"/></svg>
-      <input id="bps-q" type="search" placeholder="Find a species, e.g. roseana" autocomplete="off" spellcheck="false">
-    </label>
-    <div class="bps-tools">
-      <div class="bps-seg" role="tablist" aria-label="View">
-        <button type="button" role="tab" data-view="shelf" aria-selected="true">Moisture</button>
-        <button type="button" role="tab" data-view="plot" aria-selected="false">Moisture × heat</button>
-      </div>
-      <div class="bps-seg bps-units" aria-label="Temperature units">
-        <button type="button" data-u="F">°F</button><button type="button" data-u="C">°C</button>
-      </div>
+  <header class="bps-head">
+    <div>
+      <h2 class="bps-title">Pygmy Sundew Habitat Finder</h2>
+      <p class="bps-sub">Where each species grows, how wet to keep it, and how hot its summers get.</p>
     </div>
-  </div>
-  <p class="bps-hint" id="bps-hint">How wet to keep the soil in the growing season, based on each species' habitat. <span class="bps-key"><span class="bps-moon" aria-hidden="true"></span> often goes dormant in summer in cultivation</span>. Tap a species for details.</p>
+    <div class="bps-seg bps-units" aria-label="Temperature units">
+      <button type="button" data-u="F">°F</button><button type="button" data-u="C">°C</button>
+    </div>
+  </header>
+  <label class="bps-search" for="bps-q">
+    <svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="8.5" cy="8.5" r="5.5"/><path d="M13 13l4 4"/></svg>
+    <input id="bps-q" type="search" placeholder="Find a species, e.g. roseana" autocomplete="off" spellcheck="false">
+  </label>
   <div class="bps-body">
     <div class="bps-main">
+      <section class="bps-hero" aria-label="Map of south-west Western Australia">
+        <div class="bps-map" id="bps-map"></div>
+        <div class="bps-mapside" id="bps-mapside"></div>
+      </section>
+      <div class="bps-bar">
+        <div class="bps-seg" role="tablist" aria-label="View">
+          <button type="button" role="tab" data-view="shelf" aria-selected="true">By soil moisture</button>
+          <button type="button" role="tab" data-view="plot" aria-selected="false">Moisture × heat</button>
+        </div>
+        <div class="bps-filter" id="bps-filter" hidden></div>
+      </div>
       <div class="bps-shelf" id="bps-shelf"></div>
       <div class="bps-plot" id="bps-plot" hidden></div>
     </div>
@@ -27,91 +35,140 @@
     <ul>
       <li>Soil type: Nunn &amp; Lambers (2017), <a href="https://cpn.carnivorousplants.org/articles/CPNv46n1p13_19.pdf" target="_blank" rel="noopener">Carnivorous Plant Newsletter 46(1)</a>.</li>
       <li>Habitat &amp; range: <a href="https://carnivorousplants.org/cp/taxonomy/pygmyDrosera" target="_blank" rel="noopener">ICPS Guide to the Pygmy Drosera</a>, after Lowrie et al. (2017); <a href="https://www.fierceflora.com/" target="_blank" rel="noopener">Fierce Flora</a> (Boaz Ng) field profiles; <a href="https://florabase.dbca.wa.gov.au/" target="_blank" rel="noopener">FloraBase</a>; the D. micra type specimen label (Lowrie &amp; Conran 2014); Robinson et al. (2018) for D. albonotata.</li>
+      <li>Map: Köppen–Geiger climate zones 1991–2020, Beck et al. (2023), <a href="https://doi.org/10.1038/s41597-023-02549-6" target="_blank" rel="noopener">Scientific Data</a>, CC BY 4.0. Species are shown on a 25 km grid from research-grade <a href="https://www.inaturalist.org" target="_blank" rel="noopener">iNaturalist</a> records; exact locations are not shown. D. micra is shown at its type locality only.</li>
       <li>Typical hot extreme: <a href="https://www.burymeinthebog.com/map" target="_blank" rel="noopener">Bogman Climate Map</a>, the hottest month's 90th-percentile daily high from NASA POWER data. Grid cells are ~50 km, so treat values as ±3°C.</li>
       <li>Moisture band: scored from each species' published habitat descriptions. A guide, not a measurement.</li>
       <li>Rainfall, monthly highs and lows: <a href="http://www.bom.gov.au/climate/averages/" target="_blank" rel="noopener">Australian Bureau of Meteorology</a> long-term averages from 27 stations, weighted to each species' records.</li>
       <li>Dry months: months where average rainfall (mm) is less than twice the average temperature (°C), the standard Bagnouls–Gaussen test. 5–6 dry months is a dry summer; 7 or more is a long, dry summer.</li>
       <li>Climate uses research-grade records only, inside the species' native range.</li>
-      <li>Summer dormancy flag: species that growers report going dormant in cultivation (<a href="https://www.terraforums.com/forums/threads/pygmies-dormant-now.123814" target="_blank" rel="noopener">Terraforums</a> threads). Anecdotal; some growers keep the same species growing all year.</li>
+      <li>Photos: cultivated plants from the <a href="https://www.burymeinthebog.com/species" target="_blank" rel="noopener">Bogman Gallery</a>. Wild photos load from iNaturalist, credited to each photographer; only openly licensed photos (CC0, CC BY, CC BY-SA) are shown.</li>
     </ul>
   </details>
 </div>
 
 <style>
-.bps{--bps-bg:#161916;--bps-card:#1e221e;--bps-el:#272c27;--bps-fg:#ece7dc;--bps-mut:#a39d90;--bps-line:#353b34;--bps-acc:#f2849a;
-  --bps-dry:#e2c27a;--bps-drained:#d98b52;--bps-moist:#5dbaa7;--bps-wet:#6f9fe3;--bps-moon:#e9e2cf;
-  --bps-hot:#f2a65e;--bps-cool:#86b2e3;--bps-p90:#ef6464;--bps-ink:#141614;--b:var(--bps-acc);
+.bps{--bps-bg:#17160f;--bps-card:#201e16;--bps-el:#2a281e;--bps-line:#3b382b;--bps-fg:#f1ead7;--bps-mut:#b2a789;--bps-ink:#17150e;
+  --bps-acc:#e9b949;--bps-rust:#c9573a;--bps-leaf:#8fae5c;
+  --bps-dry:#e6c76a;--bps-drained:#cd6a3e;--bps-moist:#95b25d;--bps-wet:#4f9a7d;
+  --bps-hot:#eda24a;--bps-cool:#9fbccb;--bps-p90:#dc5a3c;--bps-rain:#6c9e86;--b:var(--bps-acc);
   --bps-serif:"Lora",Georgia,"Times New Roman",serif;
   font-family:inherit;color:var(--bps-fg);background:var(--bps-bg);
-  background:radial-gradient(110% 70% at 0% 0%,rgba(93,186,167,.10),transparent 60%),radial-gradient(90% 60% at 100% 0%,rgba(242,132,154,.07),transparent 55%),var(--bps-bg);
-  border:1px solid var(--bps-line);border-radius:16px;padding:18px;line-height:1.45;font-size:15px;box-sizing:border-box;position:relative;
-  box-shadow:0 12px 40px rgba(0,0,0,.35);color-scheme:dark;-webkit-font-smoothing:antialiased}
+  background:radial-gradient(120% 60% at 0% 0%,rgba(143,174,92,.13),transparent 60%),radial-gradient(80% 50% at 100% 0%,rgba(233,185,73,.08),transparent 55%),radial-gradient(90% 60% at 100% 100%,rgba(201,87,58,.07),transparent 60%),var(--bps-bg);
+  border:1px solid var(--bps-line);border-radius:18px;padding:20px;line-height:1.45;font-size:15px;box-sizing:border-box;position:relative;
+  box-shadow:0 14px 44px rgba(0,0,0,.38);color-scheme:dark;-webkit-font-smoothing:antialiased;text-align:left}
 .bps *{box-sizing:border-box}
 .bps [hidden]{display:none!important}
-.bps button{font:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent}
-.bps-top{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between}
-.bps-search{flex:1 1 260px;display:flex;align-items:center;gap:9px;background:var(--bps-card);border:1px solid var(--bps-line);
-  border-radius:999px;padding:9px 16px;transition:border-color .15s,box-shadow .15s}
+.bps button{font:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent;letter-spacing:normal;text-transform:none}
+.bps-head{display:flex;gap:12px;align-items:flex-start;justify-content:space-between;margin-bottom:12px}
+.bps .bps-title{font-family:amboy-black,var(--bps-serif);font-weight:600;font-size:26px;line-height:1.1;margin:0;color:var(--bps-fg);letter-spacing:.005em;text-transform:none}
+.bps .bps-sub{margin:5px 0 0;color:var(--bps-mut);font-size:14px;line-height:1.4}
+.bps-search{display:flex;align-items:center;gap:9px;background:var(--bps-card);border:1px solid var(--bps-line);
+  border-radius:999px;padding:10px 16px;transition:border-color .15s,box-shadow .15s;margin-bottom:14px}
 .bps-search svg{width:17px;height:17px;fill:none;stroke:var(--bps-mut);stroke-width:2;stroke-linecap:round;flex:none}
 .bps .bps-search input{border:0;outline:0;background:none;font:inherit;font-size:15px;width:100%;color:var(--bps-fg);min-width:0;
   padding:0;margin:0;height:auto;box-shadow:none;-webkit-appearance:none;appearance:none}
 .bps .bps-search input::placeholder{color:var(--bps-mut);opacity:.85}
-.bps-search:focus-within{border-color:var(--bps-acc);box-shadow:0 0 0 3px rgba(242,132,154,.18)}
-.bps-tools{display:flex;gap:8px;flex-wrap:wrap}
-.bps-seg{display:inline-flex;background:var(--bps-card);border:1px solid var(--bps-line);border-radius:999px;padding:3px}
-.bps-seg button{border:0;background:none;color:var(--bps-mut);padding:6px 13px;border-radius:999px;font-size:13px;font-weight:600;transition:background .15s,color .15s}
+.bps-search:focus-within{border-color:var(--bps-acc);box-shadow:0 0 0 3px rgba(233,185,73,.18)}
+.bps-seg{display:inline-flex;background:var(--bps-card);border:1px solid var(--bps-line);border-radius:999px;padding:3px;flex:none}
+.bps-seg button{border:0;background:none;color:var(--bps-mut);padding:6px 13px;border-radius:999px;font-size:13px;font-weight:600;transition:background .15s,color .15s;white-space:nowrap}
 .bps-seg button:hover{color:var(--bps-fg)}
-.bps-seg button[aria-selected="true"],.bps-seg button[aria-pressed="true"]{background:var(--bps-fg);color:var(--bps-ink)}
-.bps-hint{color:var(--bps-mut);font-size:13px;margin:12px 2px 14px}
-.bps-body{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:16px;align-items:start}
+.bps-seg button[aria-selected="true"],.bps-seg button[aria-pressed="true"]{background:var(--bps-acc);color:var(--bps-ink)}
+.bps-body{display:grid;grid-template-columns:minmax(0,1fr) 360px;gap:18px;align-items:start}
+.bps-main{min-width:0}
+/* hero map */
+.bps-hero{display:grid;grid-template-columns:minmax(0,1fr) 190px;gap:14px;background:var(--bps-card);border:1px solid var(--bps-line);border-radius:14px;padding:12px;margin-bottom:14px}
+.bps-map{position:relative;max-width:620px;width:100%;justify-self:center}
+.bps-map img{display:block;width:100%;height:auto;opacity:.9;filter:drop-shadow(0 0 .6px rgba(241,234,215,.95)) drop-shadow(0 6px 14px rgba(0,0,0,.45))}
+.bps-map svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
+.bps-map .bps-cell{cursor:pointer;transition:opacity .2s}
+.bps-map .bps-cell:hover{stroke:#fff;stroke-width:2}
+.bps-map text{font-family:inherit;pointer-events:none}
+.bps-mapside{display:flex;flex-direction:column;gap:10px;font-size:12.5px;color:var(--bps-mut);min-width:0}
+.bps-mapside h4{margin:0;font-size:10.5px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--bps-mut)}
+.bps-mapnow{background:var(--bps-el);border:1px solid var(--bps-line);border-radius:10px;padding:10px}
+.bps-mapnow b{display:block;color:var(--bps-fg);font-size:15px;line-height:1.25;margin:3px 0 2px}
+.bps-mapnow b i{font-family:var(--bps-serif)}
+.bps-mapnow .bps-mini{display:flex;flex-wrap:wrap;gap:4px;margin-top:7px}
+.bps-mapnow .bps-mini button{border:1px solid var(--bps-line);background:var(--bps-card);color:var(--bps-fg);border-radius:999px;padding:1px 8px;font-family:var(--bps-serif);font-style:italic;font-size:12.5px}
+.bps-mapnow .bps-mini button:hover{border-color:var(--bps-acc)}
+.bps-mapnow .bps-x{display:block;border:0;background:none;color:var(--bps-acc);padding:0;font-size:12px;font-weight:700;margin-top:6px}
+.bps-kg{list-style:none;margin:6px 0 0;padding:0;display:grid;gap:4px}
+.bps-kg li{display:flex;gap:7px;align-items:center;line-height:1.2;margin:0}
+.bps-kg i{width:14px;height:10px;border-radius:2px;flex:none}
+.bps-kg code{font-family:inherit;font-weight:700;color:var(--bps-fg);font-size:11.5px;min-width:28px;background:none;padding:0}
+.bps-rich{display:flex;align-items:center;gap:8px;margin-top:5px}
+.bps-rich svg{flex:none}
+/* toolbar + filter */
+.bps-bar{display:flex;flex-wrap:wrap;gap:8px 12px;align-items:center;margin-bottom:10px}
+.bps-filter{display:inline-flex;align-items:center;gap:8px;font-size:13px;color:var(--bps-fg);background:rgba(233,185,73,.12);border:1px solid rgba(233,185,73,.4);border-radius:999px;padding:4px 6px 4px 12px}
+.bps-filter button{border:0;background:var(--bps-acc);color:var(--bps-ink);border-radius:999px;padding:2px 9px;font-size:12px;font-weight:700}
+/* shelf */
 .bps-shelf{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
-.bps-col{background:var(--bps-card);background:linear-gradient(180deg,color-mix(in srgb,var(--b) 13%,transparent),transparent 96px),var(--bps-card);
+.bps-col{background:var(--bps-card);background:linear-gradient(180deg,color-mix(in srgb,var(--b) 14%,transparent),transparent 96px),var(--bps-card);
   border:1px solid var(--bps-line);border-top:3px solid var(--b);border-radius:12px;overflow:hidden;min-width:0}
-.bps-colh{padding:11px 11px 9px;display:flex;align-items:flex-start;gap:9px;color:var(--bps-fg)}
-.bps-colh b{font-size:15px;letter-spacing:.01em;color:var(--b)}
+.bps-colh{padding:11px 11px 8px;display:flex;align-items:flex-start;gap:9px;color:var(--bps-fg)}
+.bps-colh > div{flex:1;min-width:0}
+.bps-colh b{font-size:15px;color:var(--b)}
 .bps-colh small{display:block;color:var(--bps-mut);font-size:11.5px;font-weight:400;line-height:1.3;margin-top:1px}
-.bps-colh .bps-n{margin-left:auto;font-size:11.5px;font-weight:600;color:var(--bps-mut);background:var(--bps-el);border-radius:999px;padding:1px 8px;font-variant-numeric:tabular-nums}
+.bps-colh .bps-n{font-size:11.5px;font-weight:700;color:var(--bps-mut);background:var(--bps-el);border-radius:999px;padding:1px 8px;font-variant-numeric:tabular-nums}
 .bps-drop{width:16px;height:20px;flex:none;margin-top:1px}
 .bps-chips{display:flex;flex-wrap:wrap;gap:6px;padding:4px 10px 12px}
-.bps .bps-chip{border:1px solid transparent;background:var(--bps-el);color:var(--bps-fg);border-radius:999px;padding:3px 11px 4px;
+.bps .bps-chip{display:inline-flex;align-items:center;gap:6px;border:1px solid transparent;background:var(--bps-el);color:var(--bps-fg);border-radius:999px;padding:3px 11px 3px 4px;
   font-family:var(--bps-serif);font-size:14px;font-style:italic;font-weight:500;line-height:1.35;
   transition:opacity .15s,background .15s,border-color .15s,box-shadow .2s,color .15s}
+.bps-chip .bps-av{width:22px;height:22px;border-radius:50%;flex:none;background:color-mix(in srgb,var(--b) 22%,var(--bps-card));background-size:cover;background-position:center;
+  box-shadow:inset 0 0 0 1px rgba(0,0,0,.25)}
 .bps-chip:hover{border-color:var(--b);background:color-mix(in srgb,var(--b) 16%,var(--bps-el))}
-.bps-chip.is-sel{background:var(--b);color:var(--bps-ink);border-color:var(--b);
+.bps .bps-chip.is-sel{background:var(--b);color:var(--bps-ink);border-color:var(--b);
   box-shadow:0 0 0 3px color-mix(in srgb,var(--b) 28%,transparent),0 0 18px color-mix(in srgb,var(--b) 45%,transparent)}
-.bps-chip.is-dim{opacity:.18}
-.bps-chip.is-hyb{border:1px dashed color-mix(in srgb,var(--b) 55%,var(--bps-line));background:transparent}
-.bps-chip.is-hyb.is-sel{background:var(--b);border-style:solid}
-.bps-moon{display:inline-block;width:9px;height:9px;border-radius:50%;margin-left:6px;vertical-align:0;
-  box-shadow:inset -3px 0 0 0 var(--bps-moon);flex:none}
-.bps-chip.is-sel .bps-moon{box-shadow:inset -3px 0 0 0 var(--bps-ink)}
-.bps-key{white-space:nowrap;color:var(--bps-fg)}
-.bps-key .bps-moon{margin:0 3px 0 4px}
-.bps-dorm{display:flex;gap:10px;align-items:flex-start;margin-top:12px;padding:10px 12px;border-radius:10px;
-  border:1px solid rgba(233,226,207,.18);background:linear-gradient(135deg,rgba(134,178,227,.10),rgba(233,226,207,.04));font-size:13px}
-.bps-dorm .bps-moon{width:14px;height:14px;margin:3px 0 0;box-shadow:inset -4px 0 0 0 var(--bps-moon);filter:drop-shadow(0 0 4px rgba(233,226,207,.45))}
-.bps-dorm b{display:block;font-size:13.5px}
-.bps-dorm span{color:var(--bps-mut)}
-.bps-chip:focus-visible,.bps-seg button:focus-visible,.bps-close:focus-visible,.bps a:focus-visible{outline:2px solid var(--bps-acc);outline-offset:2px}
-.bps-detail{--b:var(--bps-acc);background:var(--bps-card);border:1px solid var(--bps-line);border-radius:14px;padding:18px;position:sticky;top:16px;min-height:220px;
-  box-shadow:inset 0 3px 0 var(--b)}
+.bps-chip.is-sel .bps-av{box-shadow:0 0 0 2px var(--bps-ink)}
+.bps-chip.is-dim{opacity:.16}
+.bps .bps-chip.is-hyb{border:1px dashed color-mix(in srgb,var(--b) 55%,var(--bps-line));background:transparent}
+.bps .bps-chip.is-hyb.is-sel{background:var(--b);border-style:solid}
+.bps-chip:focus-visible,.bps-seg button:focus-visible,.bps-close:focus-visible,.bps a:focus-visible,.bps-pv button:focus-visible{outline:2px solid var(--bps-acc);outline-offset:2px}
+/* detail */
+.bps-detail{--b:var(--bps-acc);background:var(--bps-card);border:1px solid var(--bps-line);border-radius:14px;padding:18px;position:sticky;top:16px;min-height:240px;
+  box-shadow:inset 0 3px 0 var(--b);max-height:calc(100vh - 32px);overflow-y:auto;scrollbar-width:thin}
 .bps-d{animation:bps-in .25s ease}
 @keyframes bps-in{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
 .bps-empty{color:var(--bps-mut);font-size:14px;text-align:center;padding:10px 6px}
 .bps-empty svg{width:120px;height:120px;display:block;margin:4px auto 10px}
-.bps-empty b{display:block;color:var(--bps-fg);font-size:16px;margin-bottom:4px;font-family:var(--bps-serif);font-style:italic}
-.bps-close{display:none;position:absolute;right:10px;top:10px;border:0;background:var(--bps-el);border-radius:50%;width:32px;height:32px;font-size:20px;line-height:1;color:var(--bps-fg);padding:0}
-.bps-d-name{font-family:var(--bps-serif);font-style:italic;font-size:25px;font-weight:600;margin:0 34px 2px 0;line-height:1.15;color:var(--bps-fg);letter-spacing:-.005em}
-.bps-d-par{color:var(--bps-mut);font-size:13px;margin:2px 0 10px;display:flex;flex-wrap:wrap;gap:6px;align-items:center}
-.bps-tag{display:inline-flex;align-items:center;gap:5px;font-size:11.5px;font-weight:600;letter-spacing:.03em;color:var(--b);
-  background:color-mix(in srgb,var(--b) 14%,transparent);border:1px solid color-mix(in srgb,var(--b) 35%,transparent);border-radius:999px;padding:1px 9px}
-.bps-photos{display:flex;gap:6px;overflow-x:auto;scroll-snap-type:x mandatory;margin:8px 0 2px;border-radius:10px;scrollbar-width:thin}
-.bps-photos img{height:170px;width:auto;max-width:none;flex:none;border-radius:10px;scroll-snap-align:start;object-fit:cover;background:var(--bps-el)}
-.bps-photos img:only-child{width:100%;height:210px}
-.bps-credit{font-size:11px;color:var(--bps-mut);margin:2px 0 4px}
-.bps-meters{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:12px 0 10px}
+.bps-empty b{display:block;color:var(--bps-fg);font-size:17px;margin-bottom:4px;font-family:var(--bps-serif);font-style:italic}
+.bps-close{display:none;position:absolute;right:10px;top:10px;border:0;background:var(--bps-el);border-radius:50%;width:32px;height:32px;font-size:20px;line-height:1;color:var(--bps-fg);padding:0;z-index:2}
+.bps .bps-d-name{font-family:var(--bps-serif);font-style:italic;font-size:25px;font-weight:600;margin:0 34px 2px 0;line-height:1.15;color:var(--bps-fg);letter-spacing:-.005em;text-transform:none}
+.bps-d-par{color:var(--bps-mut);font-size:13px;margin:4px 0 12px;display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.bps-tag{display:inline-flex;align-items:center;gap:5px;font-size:11.5px;font-weight:700;letter-spacing:.03em;color:var(--b);
+  background:color-mix(in srgb,var(--b) 14%,transparent);border:1px solid color-mix(in srgb,var(--b) 38%,transparent);border-radius:999px;padding:1px 9px}
+/* photo viewer */
+.bps-pv{margin:0 0 12px}
+.bps-pv-top{display:flex;flex-wrap:wrap;gap:6px;align-items:center;justify-content:space-between;margin-bottom:8px}
+.bps-pv .bps-seg button{padding:4px 11px;font-size:12px}
+.bps-pv .bps-seg button:disabled{opacity:.4;cursor:default}
+.bps-forms{display:flex;gap:5px;overflow-x:auto;scrollbar-width:none;margin:0 0 8px;padding-bottom:1px}
+.bps-forms::-webkit-scrollbar{display:none}
+.bps-forms button{flex:none;border:1px solid var(--bps-line);background:var(--bps-el);color:var(--bps-mut);border-radius:999px;padding:2px 10px;font-size:12px;font-weight:600}
+.bps-forms button[aria-pressed="true"]{color:var(--bps-ink);background:var(--bps-fg);border-color:var(--bps-fg)}
+.bps-stage{position:relative;aspect-ratio:4/3;border-radius:12px;overflow:hidden;background:#0f0e09;cursor:zoom-in}
+.bps-stage img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:opacity .25s}
+.bps-stage.is-wild img{object-fit:contain}
+.bps-stage .bps-nav{position:absolute;top:50%;transform:translateY(-50%);width:34px;height:34px;border-radius:50%;border:0;background:rgba(15,14,9,.6);color:#fff;font-size:18px;line-height:1;
+  display:flex;align-items:center;justify-content:center;backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);opacity:.85;padding:0}
+.bps-stage .bps-nav:hover{opacity:1;background:rgba(15,14,9,.8)}
+.bps-stage .bps-prev{left:8px}.bps-stage .bps-next{right:8px}
+.bps-count{position:absolute;right:8px;bottom:8px;background:rgba(15,14,9,.65);color:#fff;font-size:11.5px;font-weight:600;border-radius:999px;padding:2px 8px;font-variant-numeric:tabular-nums}
+.bps-thumbs{display:flex;gap:5px;overflow-x:auto;margin-top:6px;padding-bottom:3px;scrollbar-width:thin}
+.bps-thumbs button{flex:none;width:52px;height:52px;border-radius:7px;border:2px solid transparent;padding:0;background:var(--bps-el) center/cover;opacity:.7}
+.bps-thumbs button[aria-current="true"]{border-color:var(--bps-acc);opacity:1}
+.bps-thumbs button:hover{opacity:1}
+.bps-cap{font-size:11.5px;color:var(--bps-mut);margin:6px 0 0;display:flex;flex-wrap:wrap;gap:4px 10px;justify-content:space-between}
+.bps-cap a{color:var(--bps-acc);text-decoration:none;font-weight:600}
+.bps-cap a:hover{text-decoration:underline}
+.bps-pv-msg{font-size:12.5px;color:var(--bps-mut);background:var(--bps-el);border-radius:10px;padding:14px;text-align:center;margin:0}
+.bps-pv-msg a{color:var(--bps-acc)}
+/* meters */
+.bps-meters{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:0 0 10px}
 .bps-m{border-radius:10px;padding:10px 11px;background:var(--bps-el);border:1px solid var(--bps-line)}
-.bps-m span{display:block;font-size:10.5px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--bps-mut)}
+.bps-m span{display:block;font-size:10.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--bps-mut)}
 .bps-m b{font-size:21px;display:block;line-height:1.25;font-variant-numeric:tabular-nums;margin-top:1px}
 .bps-m small{color:var(--bps-mut);font-size:12px;line-height:1.3;display:block}
 .bps-m3{grid-column:1 / -1}
@@ -119,18 +176,19 @@
 .bps-m3h b{font-size:16px}
 .bps-m3h small{display:inline}
 .bps-strip{display:grid;grid-template-columns:repeat(12,1fr);gap:3px;margin-top:7px}
-.bps-strip i{font-style:normal;font-size:10px;font-weight:600;text-align:center;padding:3px 0;border-radius:4px;background:var(--bps-bg);color:var(--bps-mut)}
+.bps-strip i{font-style:normal;font-size:10px;font-weight:700;text-align:center;padding:3px 0;border-radius:4px;background:var(--bps-bg);color:var(--bps-mut)}
 .bps-strip i.is-dry{background:var(--bps-dry);color:var(--bps-ink)}
 .bps-gauge{display:flex;gap:3px;margin-top:6px}
 .bps-gauge i{flex:1;height:6px;border-radius:3px;background:var(--bps-bg)}
-.bps-spark{margin:6px 0 2px;background:var(--bps-el);border:1px solid var(--bps-line);border-radius:10px;padding:10px 10px 6px}
+.bps-spark{margin:0 0 2px;background:var(--bps-el);border:1px solid var(--bps-line);border-radius:10px;padding:10px 8px 7px}
 .bps-spark svg{width:100%;height:auto;display:block;overflow:visible}
-.bps-leg{display:flex;flex-wrap:wrap;gap:4px 12px;font-size:11.5px;color:var(--bps-mut);margin-top:4px}
+.bps-leg{display:flex;flex-wrap:wrap;gap:4px 12px;font-size:11.5px;color:var(--bps-mut);margin-top:4px;padding-left:4px}
 .bps-leg i{display:inline-block;width:12px;height:3px;border-radius:2px;vertical-align:middle;margin-right:5px}
-.bps-leg i.is-bar{height:9px;width:8px;opacity:.55}
+.bps-leg i.is-bar{height:9px;width:8px;opacity:.7}
 .bps-leg i.is-dash{background:repeating-linear-gradient(90deg,var(--bps-p90) 0 3px,transparent 3px 5px)!important}
-.bps-d dt{font-size:10.5px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--bps-mut);margin-top:12px}
+.bps-d dt{font-size:10.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--bps-mut);margin-top:12px}
 .bps-d dd{margin:2px 0 0;font-size:14px;line-height:1.5}
+.bps-d dd code{font-family:inherit;font-weight:700;margin-right:4px;background:none;padding:0;color:var(--bps-fg)}
 .bps-d dl{margin:0}
 .bps-note{font-size:13px;color:var(--bps-mut);background:var(--bps-el);border-left:3px solid var(--b);border-radius:6px;padding:8px 10px;margin-top:12px}
 .bps-links{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px;font-size:13px}
@@ -143,7 +201,7 @@
 .bps-shoprow a:hover{border-color:var(--bps-acc)}
 .bps-shoprow a.is-out{color:var(--bps-mut);background:none;border-style:dashed}
 .bps-cite{font-size:11.5px;color:var(--bps-mut);margin:14px 0 0;border-top:1px solid var(--bps-line);padding-top:9px}
-.bps-cite a{color:var(--bps-mut);text-decoration:underline;text-decoration-color:rgba(163,157,144,.4);text-underline-offset:2px}
+.bps-cite a{color:var(--bps-mut);text-decoration:underline;text-decoration-color:rgba(178,167,137,.4);text-underline-offset:2px}
 .bps-cite a:hover{color:var(--bps-fg)}
 .bps-plot svg{width:100%;height:auto;display:block;background:var(--bps-card);border:1px solid var(--bps-line);border-radius:12px}
 .bps-plot .bps-np{font-size:12.5px;color:var(--bps-mut);margin-top:8px}
@@ -155,38 +213,61 @@
 .bps-src ul{margin:8px 0 0;padding-left:18px}
 .bps-src li{margin:3px 0}
 .bps-src a{color:var(--bps-acc)}
-details.bps-seo{color:#b9b3a6}
-details.bps-seo a{color:#f2849a}
+details.bps-seo{color:#b2a789}
+details.bps-seo a{color:#e9b949}
+/* lightbox (lives on <body>) */
+.bps-lb{position:fixed;inset:0;z-index:100000;background:rgba(10,9,6,.94);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:48px 12px 16px;
+  color:#f1ead7;font-family:inherit;animation:bps-in .2s ease}
+.bps-lb img{max-width:100%;max-height:calc(100vh - 120px);object-fit:contain;border-radius:8px;box-shadow:0 10px 50px rgba(0,0,0,.6)}
+.bps-lb button{position:absolute;border:0;background:rgba(241,234,215,.12);color:#f1ead7;border-radius:50%;width:44px;height:44px;font-size:22px;line-height:1;cursor:pointer;padding:0}
+.bps-lb button:hover{background:rgba(241,234,215,.22)}
+.bps-lb .bps-lbx{top:10px;right:10px}.bps-lb .bps-lbp{left:12px;top:50%}.bps-lb .bps-lbn{right:12px;top:50%}
+.bps-lb p{margin:10px 0 0;font-size:13px;color:#b2a789;text-align:center}
+.bps-lb p a{color:#e9b949}
+@media (max-width:1040px){ .bps-hero{grid-template-columns:1fr} .bps-mapside{display:grid;grid-template-columns:1fr 1fr;gap:10px} }
 @media (max-width:860px){
   .bps-body{grid-template-columns:1fr}
   .bps-shelf{grid-template-columns:1fr 1fr}
-  .bps-detail{position:fixed;left:0;right:0;bottom:0;top:auto;z-index:9999;max-height:80vh;overflow-y:auto;overscroll-behavior:contain;border-radius:18px 18px 0 0;
+  .bps-detail{position:fixed;left:0;right:0;bottom:0;top:auto;z-index:9999;max-height:84vh;overflow-y:auto;overscroll-behavior:contain;border-radius:18px 18px 0 0;
     border-bottom:0;transform:translateY(110%);visibility:hidden;transition:transform .25s cubic-bezier(.2,.8,.2,1),visibility 0s .25s,box-shadow .25s;
-    padding:22px max(16px,env(safe-area-inset-right,0px)) calc(18px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px))}
+    padding:24px max(16px,env(safe-area-inset-right,0px)) calc(18px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px))}
   .bps-detail::before{content:"";position:absolute;top:8px;left:50%;width:40px;height:4px;margin-left:-20px;border-radius:2px;background:var(--bps-line)}
   .bps-detail.is-open{transform:none;visibility:visible;transition:transform .25s cubic-bezier(.2,.8,.2,1),box-shadow .25s;
-    box-shadow:inset 0 3px 0 var(--b),0 -10px 40px rgba(0,0,0,.5),0 0 0 100vmax rgba(0,0,0,.5)}
+    box-shadow:inset 0 3px 0 var(--b),0 -10px 40px rgba(0,0,0,.5),0 0 0 100vmax rgba(0,0,0,.55)}
   .bps-detail .bps-empty{display:none}
   .bps-close{display:block}
 }
-@media (max-width:520px){.bps{padding:12px;border-radius:14px}.bps-shelf{grid-template-columns:1fr}.bps-tools{width:100%;justify-content:space-between}}
-@media (prefers-reduced-motion:reduce){.bps *{transition:none!important;animation:none!important}}
+@media (max-width:560px){
+  .bps{padding:12px;border-radius:14px}
+  .bps .bps-title{font-size:21px}
+  .bps-hero{padding:8px}
+  .bps-mapside{grid-template-columns:1fr}
+  .bps-kg{grid-template-columns:1fr 1fr;column-gap:10px}
+  .bps-shelf{grid-template-columns:1fr}
+}
+@media (prefers-reduced-motion:reduce){.bps *,.bps-lb{transition:none!important;animation:none!important}}
 </style>
 
 <script>
 (function(){
   var BASE = window.BPS_BASE || "";                 // set by widget.js from its own URL
   var DATA_URL = window.BPS_DATA_URL || (BASE ? BASE + "pygmy-data.json" : null);
-  var PHOTO_URL = BASE ? BASE + "photos/" : null;
+  var GALLERY_URL = window.BPS_GALLERY_URL || "https://pub-97a106a00b6a4f8d97ccd167ee89e570.r2.dev/site/gallery.json";  // Bogman Gallery (read only)
+  var GALLERY_PAGE = "https://www.burymeinthebog.com/species#/taxon/";
+  var INAT_API = "https://api.inaturalist.org/v1/observations?per_page=50&id=";
+  var INAT_LIC = ["cc0","cc-by","cc-by-sa"];        // openly licensed for commercial sites; add "cc-by-nc" etc. to widen
   var MAP_URL = "https://www.burymeinthebog.com/map?sp=";
   var SHOP_URL = "/shop";
+  var SHOW_DORM = false;                            // summer-dormancy flag: data kept, display off
   var BANDS = [
     {k:"Dry",     c:"--bps-dry",     d:"Deep sand or gravel summits; drains fast", lvl:1},
     {k:"Drained", c:"--bps-drained", d:"Laterite, loam or clayey sand; free-draining", lvl:2},
     {k:"Moist",   c:"--bps-moist",   d:"Edges of winter-wet hollows, seeps, streams", lvl:3},
     {k:"Wet",     c:"--bps-wet",     d:"Swamp edges and peat; may flood in winter", lvl:4}
   ];
+  var KG_NAME = {BWh:"Hot desert",BSh:"Hot semi-arid",BSk:"Cool semi-arid",Csa:"Mediterranean, hot summer",Csb:"Mediterranean, warm summer",Cfb:"Temperate, no dry season"};
   var US = ["US","LR","MM","PR","GU","VI","AS","MP","BS","BZ","KY","PW","FM","MH"];
+  var NS = "http://www.w3.org/2000/svg";
 
   function boot(root){
     if(!root || root.getAttribute("data-bps-ready")) return;
@@ -198,12 +279,10 @@ details.bps-seo a{color:#f2849a}
   }
 
   function start(root, D){
-    var T = D.taxa, sel = null, view = "shelf", PHOTOS = {};
-    if(PHOTO_URL) fetch(PHOTO_URL + "manifest.json").then(function(r){return r.ok ? r.json() : {};})
-      .then(function(m){ PHOTOS = m || {}; if(sel) renderDetail(find(sel)); }).catch(function(){});
+    var T = D.taxa, M = D.map, sel = null, view = "shelf", cellSel = null, GAL = {}, INAT = {};
     var unit = pickUnit();
     var $ = function(s){return root.querySelector(s);};
-    var shelf=$("#bps-shelf"), plot=$("#bps-plot"), det=$("#bps-detail"), q=$("#bps-q");
+    var shelf=$("#bps-shelf"), plot=$("#bps-plot"), det=$("#bps-detail"), q=$("#bps-q"), mapEl=$("#bps-map"), side=$("#bps-mapside"), filt=$("#bps-filter");
     var css = getComputedStyle(root);
     var col = function(v){return css.getPropertyValue(v).trim();};
     var bandOf = function(k){for(var i=0;i<BANDS.length;i++) if(BANDS[i].k===k) return BANDS[i];};
@@ -217,16 +296,22 @@ details.bps-seo a{color:#f2849a}
       return "F";
     }
     function el(tag, cls, txt){ var n=document.createElement(tag); if(cls) n.className=cls; if(txt!=null) n.textContent=txt; return n; }
+    function sv(par, t, a, txt){ var e=document.createElementNS(NS,t); for(var k in a) e.setAttribute(k,a[k]); if(txt!=null) e.textContent=txt; if(par) par.appendChild(e); return e; }
     function drop(lvl, color){
-      var ns="http://www.w3.org/2000/svg", s=document.createElementNS(ns,"svg"); s.setAttribute("viewBox","0 0 16 20"); s.setAttribute("class","bps-drop");
-      var id="bpsd"+lvl+Math.random().toString(36).slice(2,6);
-      var cp=document.createElementNS(ns,"clipPath"); cp.setAttribute("id",id);
-      var p=document.createElementNS(ns,"path"); p.setAttribute("d","M8 1C8 1 2 8.5 2 12.5a6 6 0 0012 0C14 8.5 8 1 8 1z"); cp.appendChild(p); s.appendChild(cp);
-      var o=document.createElementNS(ns,"path"); o.setAttribute("d",p.getAttribute("d")); o.setAttribute("fill","none"); o.setAttribute("stroke",color); o.setAttribute("stroke-width","1.4"); s.appendChild(o);
-      var r=document.createElementNS(ns,"rect"); var h=19*lvl/4; r.setAttribute("x","0"); r.setAttribute("y",String(19.5-h)); r.setAttribute("width","16"); r.setAttribute("height",String(h));
-      r.setAttribute("fill",color); r.setAttribute("clip-path","url(#"+id+")"); s.appendChild(r);
+      var s=document.createElementNS(NS,"svg"); s.setAttribute("viewBox","0 0 16 20"); s.setAttribute("class","bps-drop");
+      var id="bpsd"+lvl+Math.random().toString(36).slice(2,6), d="M8 1C8 1 2 8.5 2 12.5a6 6 0 0012 0C14 8.5 8 1 8 1z";
+      var cp=sv(s,"clipPath",{id:id}); sv(cp,"path",{d:d});
+      sv(s,"path",{d:d,fill:"none",stroke:color,"stroke-width":"1.4"});
+      var h=19*lvl/4; sv(s,"rect",{x:0,y:19.5-h,width:16,height:h,fill:color,"clip-path":"url(#"+id+")"});
       return s;
     }
+    function norm(s){return (s||"").toLowerCase().replace(/drosera|×|\bx\b|[^a-z]/g,"");}
+    function matchQ(x, v){
+      if(!v) return true;
+      var keys=[short(x)].concat(x.alias||[]).concat(x.parents?[x.parents]:[]);
+      return keys.some(function(k){return norm(k).indexOf(v)>-1;});
+    }
+    function find(id){ for(var i=0;i<T.length;i++) if(T[i].id===id) return T[i]; }
 
     // ---- shelf
     var chips = {};
@@ -239,30 +324,28 @@ details.bps-seo a{color:#f2849a}
       c.appendChild(h);
       var wrap=el("div","bps-chips");
       list.forEach(function(x){
-        var ch=el("button","bps-chip"+(x.hyb?" is-hyb":""),short(x)); ch.type="button";
-        if(x.dorm){ var mo=el("span","bps-moon"); mo.setAttribute("aria-hidden","true"); ch.appendChild(mo); }
-        ch.setAttribute("aria-label", x.name+", "+x.band+(x.dorm?", often dormant in summer":""));
-        ch.addEventListener("click",function(){ select(x.id, true); });
+        var ch=el("button","bps-chip"+(x.hyb?" is-hyb":"")); ch.type="button";
+        ch.appendChild(el("span","bps-av")); ch.appendChild(document.createTextNode(short(x)));
+        ch.setAttribute("aria-label", x.name+", "+x.band+" soil");
+        ch.addEventListener("click",function(){ select(x.id); });
         chips[x.id]=ch; wrap.appendChild(ch);
       });
       c.appendChild(wrap); shelf.appendChild(c);
     });
+    function applyDim(){
+      var v=norm(q.value);
+      T.forEach(function(x){ if(chips[x.id]) chips[x.id].classList.toggle("is-dim", !matchQ(x,v) || !!(cellSel && cellSel.ids.indexOf(x.id)<0)); });
+    }
 
     // ---- search
-    function norm(s){return (s||"").toLowerCase().replace(/drosera|×|\bx\b|[^a-z]/g,"");}
     q.addEventListener("input", function(){
-      var v=norm(q.value), hits=[];
-      T.forEach(function(x){
-        var keys=[short(x)].concat(x.alias||[]).concat(x.parents?[x.parents]:[]);
-        var ok=!v || keys.some(function(k){return norm(k).indexOf(v)>-1;});
-        if(chips[x.id]) chips[x.id].classList.toggle("is-dim", !ok);
-        if(ok && v) hits.push(x);
-      });
+      var v=norm(q.value), hits=T.filter(function(x){return v && matchQ(x,v);});
+      applyDim();
       var starts = hits.filter(function(x){ return norm(short(x)).indexOf(v)===0 || (x.alias||[]).some(function(a){return norm(a).indexOf(v)===0;}); });
       var exact = hits.filter(function(x){ return norm(short(x))===v || (x.alias||[]).some(function(a){return norm(a)===v;}); });
       var pick = exact.length===1 ? exact[0] : hits.length===1 ? hits[0] : (starts.length===1 ? starts[0] : null);
-      if(v && v.length>=3 && pick && pick.id!==sel) select(pick.id, false);
-      if(view==="plot") drawPlot();
+      if(v && v.length>=3 && pick && pick.id!==sel) select(pick.id);
+      else { drawMap(); if(view==="plot") drawPlot(); }
     });
     q.addEventListener("keydown", function(e){ if(e.key==="Escape"){ q.value=""; q.dispatchEvent(new Event("input")); } });
 
@@ -278,47 +361,258 @@ details.bps-seo a{color:#f2849a}
     function setUnit(u){
       unit=u; try{localStorage.setItem("bps-unit",u);}catch(e){}
       root.querySelectorAll("[data-u]").forEach(function(b){b.setAttribute("aria-pressed", String(b.getAttribute("data-u")===u));});
-      if(sel) renderDetail(find(sel)); if(view==="plot") drawPlot();
+      if(sel) renderDetail(find(sel), true); if(view==="plot") drawPlot();
     }
     root.querySelectorAll("[data-u]").forEach(function(b){ b.addEventListener("click",function(){ setUnit(b.getAttribute("data-u")); }); });
-    setUnit(unit);
 
-    function find(id){ for(var i=0;i<T.length;i++) if(T[i].id===id) return T[i]; }
-    function select(id, fromTap){
-      sel=id; Object.keys(chips).forEach(function(k){chips[k].classList.toggle("is-sel",k===id);});
-      renderDetail(find(id)); det.classList.add("is-open");
-      if(view==="plot") drawPlot();
+    function setSel(id){ sel=id; Object.keys(chips).forEach(function(k){chips[k].classList.toggle("is-sel",k===id);}); }
+    function select(id){
+      if(cellSel && cellSel.ids.indexOf(id)<0) clearCell();
+      setSel(id); renderDetail(find(id)); det.classList.add("is-open");
+      drawMap(); if(view==="plot") drawPlot();
       track("species_view", id);
     }
+    function deselect(){ setSel(null); emptyDetail(); det.classList.remove("is-open"); drawMap(); if(view==="plot") drawPlot(); }
 
-    // ---- detail
-    function renderDetail(x){
+    // ================= MAP =================
+    var mapSvg=null, PX=M ? M.h/(M.ext[2]-M.ext[3]) : 1;
+    var cx2px=function(i){return i*M.g*M.cos*PX;}, cy2px=function(j){return j*M.g*PX;};
+    var lng2x=function(l){return (l-M.ext[0])*M.cos*PX;}, lat2y=function(l){return (M.ext[2]-l)*PX;};
+    var CELLS = {};                                   // "i,j" → [ids]
+    T.forEach(function(x){ (x.cells||[]).forEach(function(c){ var k=c[0]+","+c[1]; (CELLS[k]=CELLS[k]||[]).push(x.id); }); });
+    function nearTown(i,j){
+      var lat=M.ext[2]-(j+.5)*M.g, lng=M.ext[0]+(i+.5)*M.g, best=null, bd=1e9;
+      M.towns.forEach(function(t){ var dy=(t[1]-lat)*111, dx=(t[2]-lng)*111*M.cos, d=Math.sqrt(dx*dx+dy*dy); if(d<bd){bd=d;best=t;} });
+      if(bd<25) return "Around "+best[0];
+      var dy=lat-best[1], dx=(lng-best[2])*M.cos, a=Math.atan2(dy,dx)*180/Math.PI, dirs=["E","NE","N","NW","W","SW","S","SE"];
+      return "~"+Math.round(bd/10)*10+" km "+dirs[Math.round(((a+360)%360)/45)%8]+" of "+best[0];
+    }
+    function buildMap(){
+      if(!M){ root.querySelector(".bps-hero").hidden=true; return; }
+      var img=el("img"); img.src=BASE+M.img; img.alt="Köppen climate zones of south-west Western Australia"; img.width=M.w; img.height=M.h;
+      mapEl.appendChild(img);
+      mapSvg=sv(mapEl,"svg",{viewBox:"0 0 "+M.w+" "+M.h,role:"img","aria-label":"Pygmy sundew records on a 25 km grid"});
+      var defs=sv(mapSvg,"defs",{}), f=sv(defs,"filter",{id:"bps-mglow",x:"-1",y:"-1",width:"3",height:"3"});
+      sv(f,"feGaussianBlur",{stdDeviation:"4",result:"b"}); var fm=sv(f,"feMerge",{}); sv(fm,"feMergeNode",{"in":"b"}); sv(fm,"feMergeNode",{"in":"SourceGraphic"});
+      sv(mapSvg,"g",{"class":"bps-cells"});
+      var tg=sv(mapSvg,"g",{});
+      M.towns.forEach(function(t){
+        var x=lng2x(t[2]), y=lat2y(t[1]), left=t[0]==="Esperance"||t[0]==="Kalgoorlie";
+        sv(tg,"circle",{cx:x,cy:y,r:4,fill:"#f1ead7",stroke:"#17150e","stroke-width":1.5});
+        sv(tg,"text",{x:x+(left?-9:9),y:y+6,"text-anchor":left?"end":"start","font-size":"24","font-weight":"700",fill:"#f1ead7",stroke:"#17150e","stroke-width":5,"paint-order":"stroke","stroke-linejoin":"round"},t[0]);
+      });
+      var km=100/111.32*PX, sx=24, sy=M.h-22;
+      sv(tg,"path",{d:"M"+sx+" "+(sy-6)+"v6h"+km+"v-6",fill:"none",stroke:"#f1ead7","stroke-width":2.5});
+      sv(tg,"text",{x:sx+km/2,y:sy-14,"text-anchor":"middle","font-size":"22",fill:"#f1ead7",stroke:"#17150e","stroke-width":4,"paint-order":"stroke"},"100 km");
+      sv(tg,"text",{x:20,y:M.h*.42,"font-size":"26","font-style":"italic",fill:"rgba(241,234,215,.5)"},"Indian");
+      sv(tg,"text",{x:20,y:M.h*.42+30,"font-size":"26","font-style":"italic",fill:"rgba(241,234,215,.5)"},"Ocean");
+      sv(tg,"text",{x:M.w-24,y:M.h-22,"font-size":"26","font-style":"italic",fill:"rgba(241,234,215,.5)","text-anchor":"end"},"Southern Ocean");
+    }
+    function drawMap(){
+      if(!mapSvg) return;
+      var g=mapSvg.querySelector(".bps-cells"); while(g.firstChild) g.removeChild(g.firstChild);
+      var w=cx2px(1), h=cy2px(1), v=norm(q.value), x=sel?find(sel):null;
+      if(x){
+        var c=col(bandOf(x.band).c), own={}; (x.cells||[]).forEach(function(k){own[k[0]+","+k[1]]=1;});
+        Object.keys(CELLS).forEach(function(k){ if(own[k]) return; var p=k.split(",");
+          sv(g,"circle",{cx:cx2px(+p[0])+w/2,cy:cy2px(+p[1])+h/2,r:2.6,fill:"rgba(241,234,215,.4)"}); });
+        var gg=sv(g,"g",{filter:"url(#bps-mglow)"});
+        (x.cells||[]).forEach(function(k){
+          var r=sv(gg,"rect",{x:cx2px(k[0])+1.5,y:cy2px(k[1])+1.5,width:w-3,height:h-3,rx:5,fill:c,stroke:"#fff","stroke-width":1.6,"class":"bps-cell"});
+          r.addEventListener("click",function(){ pickCell(k[0],k[1]); });
+          sv(r,"title",{},nearTown(k[0],k[1]));
+        });
+      } else {
+        Object.keys(CELLS).forEach(function(k){
+          var ids=CELLS[k].filter(function(id){return matchQ(find(id),v);}); if(!ids.length) return;
+          var p=k.split(","), n=ids.length, on=!!(cellSel && cellSel.k===k);
+          var r=sv(g,"circle",{cx:cx2px(+p[0])+w/2,cy:cy2px(+p[1])+h/2,r:Math.min(w*.62,4+4.2*Math.sqrt(n)),
+            fill:n>=8?"#e9b949":n>=4?"#e7cf8a":"#f1ead7","fill-opacity":on?1:.9,stroke:on?"#fff":"#17150e","stroke-width":on?3:1.5,"class":"bps-cell"});
+          if(on) r.setAttribute("filter","url(#bps-mglow)");
+          sv(r,"title",{},nearTown(+p[0],+p[1])+": "+n+" species");
+          r.addEventListener("click",function(){ pickCell(+p[0],+p[1]); });
+        });
+      }
+      drawSide();
+    }
+    function pickCell(i,j){
+      var k=i+","+j;
+      if(sel){ setSel(null); emptyDetail(); det.classList.remove("is-open"); }
+      cellSel = (cellSel && cellSel.k===k) ? null : {k:k, ids:(CELLS[k]||[]).slice(), label:nearTown(i,j)};
+      applyDim(); drawMap(); if(view==="plot") drawPlot();
+      filt.hidden=!cellSel; filt.innerHTML="";
+      if(cellSel){ filt.appendChild(el("span",null,cellSel.ids.length+" species · "+cellSel.label)); var b=el("button",null,"Clear"); b.type="button"; b.addEventListener("click",clearCell); filt.appendChild(b); }
+      track("map_cell", k);
+    }
+    function clearCell(){ cellSel=null; filt.hidden=true; applyDim(); drawMap(); if(view==="plot") drawPlot(); }
+    function drawSide(){
+      side.innerHTML=""; if(!M) return;
+      var now=el("div","bps-mapnow"), x=sel?find(sel):null;
+      if(x){
+        now.appendChild(el("h4",null,"On the map"));
+        var b=el("b"); b.appendChild(el("i",null,x.name)); now.appendChild(b);
+        now.appendChild(el("span",null, x.cells&&x.cells.length ? (x.id==="micra" ? "Type locality only (Priority One species)." : x.cells.length+" grid square"+(x.cells.length>1?"s":"")+" with research-grade records.") : "No mapped records yet."));
+        var cl=el("button","bps-x","Show all species"); cl.type="button"; cl.addEventListener("click",deselect);
+        now.appendChild(cl);
+      } else if(cellSel){
+        now.appendChild(el("h4",null,cellSel.label));
+        now.appendChild(el("b",null,cellSel.ids.length+" species"));
+        var mini=el("div","bps-mini");
+        cellSel.ids.map(find).sort(function(a,b2){return short(a).localeCompare(short(b2));}).forEach(function(t){ var mb=el("button",null,short(t)); mb.type="button"; mb.addEventListener("click",function(){select(t.id);}); mini.appendChild(mb); });
+        now.appendChild(mini);
+        var cb=el("button","bps-x","Clear"); cb.type="button"; cb.addEventListener("click",clearCell); now.appendChild(cb);
+      } else {
+        now.appendChild(el("h4",null,"Pygmy hotspots"));
+        var rich=el("div","bps-rich"), s=document.createElementNS(NS,"svg"); s.setAttribute("width","46"); s.setAttribute("height","20"); s.setAttribute("aria-hidden","true");
+        [[6,"#f1ead7",4.5],[19,"#e7cf8a",6.5],[36,"#e9b949",8.5]].forEach(function(p){ sv(s,"circle",{cx:p[0],cy:10,r:p[2],fill:p[1],stroke:"#17150e","stroke-width":1}); });
+        rich.appendChild(s); rich.appendChild(el("span",null,"Species per 25 km square. Tap one to list them."));
+        now.appendChild(rich);
+      }
+      side.appendChild(now);
+      var kg=el("div"); kg.appendChild(el("h4",null,"Climate zones (Köppen)"));
+      var ul=el("ul","bps-kg");
+      M.koppen.forEach(function(z){ var li=el("li"), i=el("i"); i.style.background=z.rgb; li.appendChild(i); li.appendChild(el("code",null,z.c)); li.appendChild(el("span",null,z.n)); ul.appendChild(li); });
+      kg.appendChild(ul); side.appendChild(kg);
+    }
+
+    // ================= PHOTOS =================
+    var galP=null;
+    function loadGallery(){
+      if(galP) return galP;
+      galP=fetch(GALLERY_URL).then(function(r){ if(!r.ok) throw 0; return r.json(); }).then(function(g){
+        var ids={}; T.forEach(function(x){ ids[x.id.replace(/^x-/,"")]=x.id; });
+        (g.taxa||[]).forEach(function(t){
+          if(t.genus!=="Drosera" || t.group!=="Pygmy" || (t.parents&&t.parents.length) || /['"]|hybrids/i.test(t.displayName||"")) return;
+          var key=(t.displayName||"").replace(/^Drosera\s+/,"").replace(/^(×|x)\s+/,"").trim().toLowerCase(), id=ids[key];
+          if(!id) return;
+          var forms=(t.forms||[]).filter(function(f){ return f.entryType!=="hybrid" && !/×/.test(f.label||"") && f.photos && f.photos.length; })
+            .map(function(f){ return {label:(f.label||"").replace(/, Australia$/,""), slug:f.slug, photos:f.photos}; });
+          var base=t.photos||[], all=base.slice(); forms.forEach(function(f){ all=all.concat(f.photos); });
+          if(all.length) GAL[id]={slug:t.slug, base:base, forms:forms, all:all};
+        });
+        Object.keys(GAL).forEach(function(id){ var av=chips[id]&&chips[id].querySelector(".bps-av"); if(av) av.style.backgroundImage="url('"+GAL[id].all[0].thumb+"')"; });
+        return GAL;
+      }).catch(function(){ return GAL; });
+      return galP;
+    }
+    function loadInat(x){
+      if(INAT[x.id]) return INAT[x.id];
+      if(!x.inat || !x.inat.length) return INAT[x.id]=Promise.resolve([]);
+      return INAT[x.id]=fetch(INAT_API+x.inat.join(",")).then(function(r){ if(!r.ok) throw 0; return r.json(); }).then(function(j){
+        var out=[]; (j.results||[]).forEach(function(o){ (o.photos||[]).forEach(function(p){
+          if(INAT_LIC.indexOf(p.license_code)<0 || !p.url) return;
+          out.push({thumb:p.url.replace("/square.","/small."), display:p.url.replace("/square.","/large."), full:p.url.replace("/square.","/original."),
+            attr:p.attribution, obs:"https://www.inaturalist.org/observations/"+o.id});
+        }); });
+        return out;
+      }).catch(function(){ delete INAT[x.id]; return []; });
+    }
+    var pv={tab:null, form:-1, idx:0, list:[]};
+    function photoViewer(x, host){
+      host.innerHTML="";
+      var g=GAL[x.id], top=el("div","bps-pv-top"), seg=el("div","bps-seg");
+      var tC=el("button",null,"Cultivated"+(g?" · "+g.all.length:"")), tW=el("button",null,"In the wild");
+      tC.type=tW.type="button"; tC.disabled=!g; tW.disabled=!(x.inat&&x.inat.length);
+      if(!pv.tab || (pv.tab==="cult"&&!g) || (pv.tab==="wild"&&tW.disabled)) pv.tab = g ? "cult" : (!tW.disabled ? "wild" : null);
+      tC.setAttribute("aria-pressed",String(pv.tab==="cult")); tW.setAttribute("aria-pressed",String(pv.tab==="wild"));
+      tC.addEventListener("click",function(){ pv.tab="cult"; pv.idx=0; photoViewer(x,host); });
+      tW.addEventListener("click",function(){ pv.tab="wild"; pv.idx=0; photoViewer(x,host); track("inat_photos",x.id); });
+      seg.appendChild(tC); seg.appendChild(tW); top.appendChild(seg); host.appendChild(top);
+      if(!pv.tab){ host.appendChild(el("p","bps-pv-msg","No photos yet.")); return; }
+      if(pv.tab==="cult"){
+        if(pv.form>=g.forms.length) pv.form=-1;
+        if(g.forms.length && (g.base.length || g.forms.length>1)){
+          var fr=el("div","bps-forms"), opts=[{label:"All forms",i:-1}].concat(g.forms.map(function(f,i){return {label:f.label,i:i};}));
+          opts.forEach(function(o){ var b=el("button",null,o.label); b.type="button"; b.setAttribute("aria-pressed",String(pv.form===o.i));
+            b.addEventListener("click",function(){ pv.form=o.i; pv.idx=0; photoViewer(x,host); }); fr.appendChild(b); });
+          host.appendChild(fr);
+        } else if(g.forms.length===1){ var fb=el("div","bps-forms"), b1=el("button",null,g.forms[0].label); b1.type="button"; b1.setAttribute("aria-pressed","true"); fb.appendChild(b1); host.appendChild(fb); }
+        var f = pv.form>=0 ? g.forms[pv.form] : (g.forms.length===1 && !g.base.length ? g.forms[0] : null);
+        pv.list = (f ? f.photos : g.all).map(function(p){ return {thumb:p.thumb, display:p.display, full:p.full||p.display}; });
+        pv.credit = {txt:"Photo: Bogman Plantenstein", link:GALLERY_PAGE+(f?f.slug:g.slug), linkTxt:"Open in gallery ↗"};
+        renderStage(x, host, false);
+      } else {
+        var wait=el("p","bps-pv-msg","Loading iNaturalist photos…"); host.appendChild(wait);
+        loadInat(x).then(function(list){
+          if(pv.tab!=="wild" || sel!==x.id || !wait.parentNode) return;
+          wait.remove();
+          if(!list.length){ var m=el("p","bps-pv-msg"); m.appendChild(document.createTextNode("No openly licensed wild photos to show here. ")); var a=el("a",null,"Browse on iNaturalist ↗"); a.href="https://www.inaturalist.org/taxa/"+x.taxon; a.target="_blank"; a.rel="noopener"; m.appendChild(a); host.appendChild(m); return; }
+          pv.list=list; pv.credit=null; renderStage(x, host, true);
+          var more=el("p","bps-cap"); var a2=el("a",null,"More on iNaturalist ↗"); a2.href="https://www.inaturalist.org/taxa/"+x.taxon+"/browse_photos"; a2.target="_blank"; a2.rel="noopener"; more.appendChild(el("span",null,"Openly licensed photos only")); more.appendChild(a2); host.appendChild(more);
+        });
+      }
+    }
+    function renderStage(x, host, wild){
+      var L=pv.list; if(pv.idx>=L.length) pv.idx=0;
+      var st=el("div","bps-stage"+(wild?" is-wild":"")), im=el("img"); im.alt=x.name+" photo"; im.decoding="async"; st.appendChild(im);
+      var cnt=el("span","bps-count"); st.appendChild(cnt);
+      if(L.length>1){ var p=el("button","bps-nav bps-prev","‹"), n=el("button","bps-nav bps-next","›"); p.type=n.type="button"; p.setAttribute("aria-label","Previous photo"); n.setAttribute("aria-label","Next photo");
+        p.addEventListener("click",function(e){e.stopPropagation(); go(-1);}); n.addEventListener("click",function(e){e.stopPropagation(); go(1);}); st.appendChild(p); st.appendChild(n); }
+      st.addEventListener("click",function(){ lightbox(x); });
+      var sx=null; st.addEventListener("touchstart",function(e){sx=e.touches[0].clientX;},{passive:true});
+      st.addEventListener("touchend",function(e){ if(sx==null) return; var dx=e.changedTouches[0].clientX-sx; if(Math.abs(dx)>40){ go(dx<0?1:-1); } sx=null; },{passive:true});
+      host.appendChild(st);
+      var th=el("div","bps-thumbs"), btns=[];
+      if(L.length>1) L.slice(0,80).forEach(function(ph,i){ var b=el("button"); b.type="button"; b.style.backgroundImage="url('"+ph.thumb+"')"; b.setAttribute("aria-label","Photo "+(i+1));
+        b.addEventListener("click",function(){ pv.idx=i; show(); }); btns.push(b); th.appendChild(b); });
+      if(btns.length) host.appendChild(th);
+      var cap=el("p","bps-cap"); host.appendChild(cap);
+      function go(d){ pv.idx=(pv.idx+d+L.length)%L.length; show(); }
+      function show(){
+        var ph=L[pv.idx]; im.src=ph.display; cnt.textContent=(pv.idx+1)+" / "+L.length;
+        btns.forEach(function(b,i){ b.setAttribute("aria-current",String(i===pv.idx)); });
+        if(btns[pv.idx]) th.scrollLeft=Math.max(0, btns[pv.idx].offsetLeft-th.clientWidth/2+26);
+        cap.innerHTML="";
+        if(wild){ cap.appendChild(el("span",null,ph.attr)); var a=el("a",null,"Observation ↗"); a.href=ph.obs; a.target="_blank"; a.rel="noopener"; cap.appendChild(a); }
+        else { cap.appendChild(el("span",null,pv.credit.txt)); var a2=el("a",null,pv.credit.linkTxt); a2.href=pv.credit.link; a2.target="_blank"; a2.rel="noopener"; cap.appendChild(a2); }
+      }
+      pv.show=show; show();
+    }
+    function lightbox(x){
+      var L=pv.list, wild=pv.tab==="wild"; if(!L.length) return;
+      var o=el("div","bps-lb"); o.setAttribute("role","dialog"); o.setAttribute("aria-label",x.name+" photos");
+      var im=el("img"); im.alt=x.name; o.appendChild(im); var p=el("p"); o.appendChild(p);
+      var c=el("button","bps-lbx","×"), pr=el("button","bps-lbp","‹"), nx=el("button","bps-lbn","›");
+      c.setAttribute("aria-label","Close"); pr.setAttribute("aria-label","Previous"); nx.setAttribute("aria-label","Next");
+      o.appendChild(c); if(L.length>1){ o.appendChild(pr); o.appendChild(nx); }
+      function show(){ var ph=L[pv.idx]; im.src=ph.full||ph.display; p.innerHTML=""; p.appendChild(document.createTextNode((pv.idx+1)+" / "+L.length+" · "+(wild?ph.attr:"Bogman Plantenstein")+" "));
+        var a=el("a",null,wild?"iNaturalist ↗":"Gallery ↗"); a.href=wild?ph.obs:pv.credit.link; a.target="_blank"; a.rel="noopener"; p.appendChild(a); }
+      function go(d){ pv.idx=(pv.idx+d+L.length)%L.length; show(); if(pv.show) pv.show(); }
+      function close(){ document.removeEventListener("keydown",key); o.remove(); }
+      function key(e){ if(e.key==="Escape") close(); else if(e.key==="ArrowRight") go(1); else if(e.key==="ArrowLeft") go(-1); }
+      c.addEventListener("click",close); pr.addEventListener("click",function(e){e.stopPropagation();go(-1);}); nx.addEventListener("click",function(e){e.stopPropagation();go(1);});
+      o.addEventListener("click",function(e){ if(e.target===o) close(); });
+      var sx=null; o.addEventListener("touchstart",function(e){sx=e.touches[0].clientX;},{passive:true});
+      o.addEventListener("touchend",function(e){ if(sx==null) return; var dx=e.changedTouches[0].clientX-sx; if(Math.abs(dx)>40) go(dx<0?1:-1); sx=null; },{passive:true});
+      document.addEventListener("keydown",key); document.body.appendChild(o); show(); c.focus();
+    }
+
+    // ================= DETAIL =================
+    function heat(t){ // 30°C gold → 36 orange → 42 rust-red
+      var st=[[30,[230,199,106]],[36,[237,150,70]],[42,[220,90,60]]], v=Math.max(30,Math.min(42,t));
+      for(var i=0;i<st.length-1;i++){ var A=st[i],B=st[i+1]; if(v<=B[0]){ var f=(v-A[0])/(B[0]-A[0]);
+        return "rgb("+A[1].map(function(z,k){return Math.round(z+(B[1][k]-z)*f);}).join(",")+")"; } }
+      return "rgb(220,90,60)";
+    }
+    function renderDetail(x, keep){
+      if(!keep){ pv.form=-1; pv.idx=0; pv.tab=null; }
       det.innerHTML="";
       var close=el("button","bps-close","×"); close.type="button"; close.setAttribute("aria-label","Close");
       close.addEventListener("click",function(){det.classList.remove("is-open");});
       det.appendChild(close);
-      var d=el("div","bps-d");
       det.style.setProperty("--b","var("+bandOf(x.band).c+")");
+      var d=el("div","bps-d");
       d.appendChild(el("h3","bps-d-name",x.name));
-      var par=el("p","bps-d-par"); var tg=el("span","bps-tag",x.band+" soil"); par.appendChild(tg);
+      var par=el("p","bps-d-par"); par.appendChild(el("span","bps-tag",x.band+" soil"));
       par.appendChild(document.createTextNode(x.hyb ? "Natural hybrid: "+x.parents : "South-west Western Australia")); d.appendChild(par);
-      var ph = PHOTOS[x.id];
-      if(ph && ph.length){
-        var g=el("div","bps-photos");
-        ph.slice(0,6).forEach(function(p){
-          var im=document.createElement("img"); im.src=PHOTO_URL+p.f; im.alt=x.name; im.loading="lazy";
-          if(p.w&&p.h){ im.width=p.w; im.height=p.h; }
-          g.appendChild(im);
-        });
-        d.appendChild(g);
-        d.appendChild(el("p","bps-credit","Photo"+(ph.length>1?"s":"")+": "+(ph[0].credit||"Bogman Plantenstein")));
-      }
+      var pvh=el("div","bps-pv"); d.appendChild(pvh); photoViewer(x,pvh);
+      loadGallery().then(function(){ if(sel===x.id && GAL[x.id] && pv.tab!=="cult" && !keep){ pv.tab="cult"; photoViewer(x,pvh); } });
       var b=bandOf(x.band), meters=el("div","bps-meters");
       var m1=el("div","bps-m"); m1.appendChild(el("span",null,"Soil moisture")); m1.appendChild(el("b",null,x.band));
       var g=el("div","bps-gauge"); for(var i=1;i<=4;i++){ var seg=el("i"); if(i<=b.lvl) seg.style.background=col(b.c); g.appendChild(seg);} m1.appendChild(g);
       var m2=el("div","bps-m"); m2.appendChild(el("span",null,"Typical hot extreme"));
       if(x.clim){ var hv=el("b",null,"≈ "+deg(x.clim.p90)); hv.style.color=heat(x.clim.p90); m2.appendChild(hv); m2.appendChild(el("small",null,"Hottest month: "+x.clim.hotMonth+" · avg high "+deg(x.clim.avgHigh))); }
-      else { m2.appendChild(el("b",null,"—")); m2.appendChild(el("small",null,"No climate-map data")); }
+      else { m2.appendChild(el("b",null,"—")); m2.appendChild(el("small",null,"No climate data")); }
       meters.appendChild(m1); meters.appendChild(m2);
       if(x.clim){
         var c=x.clim, dryM=[]; for(var mi=0;mi<12;mi++){ if(c.pr[mi] < (c.hi[mi]+c.lo[mi])) dryM.push(mi); }
@@ -327,65 +621,64 @@ details.bps-seo a{color:#f2849a}
         head.appendChild(el("small",null, dryM.length>=7 ? "Long, dry summer" : dryM.length>=5 ? "Dry summer" : "Mild summer with some rain"));
         m3.appendChild(head);
         var strip=el("div","bps-strip");
-        "JFMAMJJASOND".split("").forEach(function(L,mi){ var cell=el("i",dryM.indexOf(mi)>-1?"is-dry":"",L); strip.appendChild(cell); });
+        "JFMAMJJASOND".split("").forEach(function(L,mi){ strip.appendChild(el("i",dryM.indexOf(mi)>-1?"is-dry":"",L)); });
         m3.appendChild(strip); meters.appendChild(m3);
       }
       d.appendChild(meters);
       if(x.clim){ d.appendChild(spark(x.clim)); }
       var dl=el("dl");
-      function row(k,v){ if(!v) return; dl.appendChild(el("dt",null,k)); dl.appendChild(el("dd",null,v)); }
+      function row(k,v){ if(!v) return; dl.appendChild(el("dt",null,k)); var dd=el("dd"); if(typeof v==="string") dd.textContent=v; else dd.appendChild(v); dl.appendChild(dd); }
       row("Habitat", x.hab); row("Range", x.dist); row("Soil type", x.soil ? x.soil.charAt(0).toUpperCase()+x.soil.slice(1) : null);
+      if(x.kz && x.kz.length){ var kz=el("span"); x.kz.forEach(function(z,i){ if(i) kz.appendChild(document.createTextNode(" · ")); kz.appendChild(el("code",null,z[0])); kz.appendChild(document.createTextNode(KG_NAME[z[0]]+(x.kz.length>1?" ("+z[1]+"%)":""))); }); row("Climate zone", kz); }
       d.appendChild(dl);
-      if(x.dorm){
-        var dn=el("div","bps-dorm"); var dm=el("span","bps-moon"); dm.setAttribute("aria-hidden","true"); dn.appendChild(dm);
-        var dt=el("div"); dt.appendChild(el("b",null,"Often goes dormant in summer"));
-        dt.appendChild(el("span",null,"Growers report it forming a resting bud in summer heat, even when kept wet. Once a bud forms, keep the soil barely damp: dormant buds rot easily in warm, wet soil."+(x.dormNote?" "+x.dormNote:"")));
-        dn.appendChild(dt); d.appendChild(dn);
-      }
+      if(SHOW_DORM && x.dorm){ d.appendChild(el("p","bps-note","Growers often report this species going dormant in summer.")); }
       if(x.note) d.appendChild(el("p","bps-note",x.note));
       var L=el("div","bps-links");
-      if(x.taxon){ var a=el("a",null,"Climate & photos on the map ↗"); a.href=MAP_URL+x.taxon; a.target="_blank"; a.rel="noopener"; L.appendChild(a); }
+      if(x.taxon){ var a=el("a",null,"Climate on the map ↗"); a.href=MAP_URL+x.taxon; a.target="_blank"; a.rel="noopener"; L.appendChild(a); }
       d.appendChild(L);
       var shopRow=el("div","bps-shoprow"); d.appendChild(shopRow); fillShop(shopRow, x);
-      var S=D.sources||{}, srcs=el("p","bps-cite"); srcs.appendChild(document.createTextNode("Sources: "));
-      (x.src||[]).forEach(function(k,i){
-        var s0=S[k]; if(!s0) return; if(i) srcs.appendChild(document.createTextNode(" · "));
+      var S=D.sources||{}, srcs=el("p","bps-cite"); srcs.appendChild(document.createTextNode("Sources: ")); var first=true;
+      (x.src||[]).forEach(function(k){
+        var s0=S[k]; if(!s0 || (k==="tf" && !SHOW_DORM)) return; if(!first) srcs.appendChild(document.createTextNode(" · ")); first=false;
         var u = (k==="ff" && x.ff) ? x.ff : (k==="tf" && x.tf) ? x.tf : s0.u, label = s0.t.split(",")[0].replace(/ \(.*$/,"");
         if(u){ var a2=el("a",null,label); a2.href=u; a2.target="_blank"; a2.rel="noopener"; srcs.appendChild(a2); }
         else srcs.appendChild(document.createTextNode(label));
       });
       d.appendChild(srcs);
       det.appendChild(d);
+      if(!keep) det.scrollTop=0;
     }
-    function heat(t){ // 30°C amber → 36 orange → 42 red
-      var st=[[30,[233,196,106]],[36,[242,138,75]],[42,[239,91,91]]], v=Math.max(30,Math.min(42,t));
-      for(var i=0;i<st.length-1;i++){ var A=st[i],B=st[i+1]; if(v<=B[0]){ var f=(v-A[0])/(B[0]-A[0]);
-        return "rgb("+A[1].map(function(z,k){return Math.round(z+(B[1][k]-z)*f);}).join(",")+")"; } }
-      return "rgb(239,91,91)";
-    }
+    function niceStep(range, n){ var raw=Math.max(range,1e-6)/n, p=Math.pow(10,Math.floor(Math.log10(raw))), m=raw/p; return (m<1.5?1:m<3?2:m<7?5:10)*p; }
     function spark(c){
-      var ns="http://www.w3.org/2000/svg", W=300,H=118,L=4,R=296,Tp=10,B=92;
-      var s=document.createElementNS(ns,"svg"); s.setAttribute("viewBox","0 0 "+W+" "+H); s.setAttribute("role","img");
+      var W=300,H=138,L=30,R=268,Tp=18,B=108;
+      var s=document.createElementNS(NS,"svg"); s.setAttribute("viewBox","0 0 "+W+" "+H); s.setAttribute("role","img");
       s.setAttribute("aria-label","Monthly temperature and rainfall");
-      var vals=c.hi.concat(c.lo).concat(c.p90m), mn=Math.min.apply(null,vals)-2, mx=Math.max.apply(null,vals)+2;
-      var X=function(i){return L+(i+.5)*(R-L)/12;}, Y=function(v){return B-(v-mn)/(mx-mn)*(B-Tp);};
-      var pmax=Math.max(120,Math.max.apply(null,c.pr));
-      function n(t,a,par){var e=document.createElementNS(ns,t); for(var k in a) e.setAttribute(k,a[k]); (par||s).appendChild(e); return e;}
-      var gid="bpsg"+Math.random().toString(36).slice(2,7), defs=n("defs",{}), lg=n("linearGradient",{id:gid,x1:0,y1:0,x2:0,y2:1},defs);
-      n("stop",{offset:"0","stop-color":col("--bps-hot"),"stop-opacity":".30"},lg); n("stop",{offset:"1","stop-color":col("--bps-cool"),"stop-opacity":".16"},lg);
-      [.25,.5,.75].forEach(function(f){ var y=Tp+(B-Tp)*f; n("line",{x1:L,x2:R,y1:y,y2:y,stroke:col("--bps-line"),"stroke-width":".6","stroke-dasharray":"2 4"}); });
-      c.pr.forEach(function(p,i){ var h=p/pmax*42; n("rect",{x:X(i)-7,y:B-h,width:14,height:h,rx:3,fill:col("--bps-moist"),"fill-opacity":".32"}); });
+      var tc=function(v){return unit==="F" ? v*9/5+32 : v;};
+      var vals=c.hi.concat(c.lo).concat(c.p90m).map(tc), step=unit==="F"?20:10;
+      var mn=Math.floor(Math.min.apply(null,vals)/step)*step, mx=Math.ceil(Math.max.apply(null,vals)/step)*step;
+      var X=function(i){return L+(i+.5)*(R-L)/12;}, Yt=function(t){return B-(t-mn)/(mx-mn)*(B-Tp);}, Y=function(v){return Yt(tc(v));};
+      var rIn=unit==="F", pr=c.pr.map(function(p){return rIn? p/25.4 : p;}), pmax=Math.max.apply(null,pr), rs=niceStep(pmax,2), rmax=Math.max(rs*2, Math.ceil(pmax/rs)*rs);
+      var Yr=function(p){return B-p/rmax*(B-Tp)*.6;};
+      var gid="bpsg"+Math.random().toString(36).slice(2,7), defs=sv(s,"defs",{}), lg=sv(defs,"linearGradient",{id:gid,x1:0,y1:0,x2:0,y2:1});
+      sv(lg,"stop",{offset:"0","stop-color":col("--bps-hot"),"stop-opacity":".32"}); sv(lg,"stop",{offset:"1","stop-color":col("--bps-cool"),"stop-opacity":".14"});
+      for(var t=mn;t<=mx+1e-9;t+=step){ var y=Yt(t);
+        sv(s,"line",{x1:L,x2:R,y1:y,y2:y,stroke:col("--bps-line"),"stroke-width":".7","stroke-dasharray":t===mn?"none":"2 4"});
+        sv(s,"text",{x:L-5,y:y+3.5,"text-anchor":"end","font-size":"9.5",fill:col("--bps-mut")},t+"°"); }
+      for(var r=0;r<=rmax+1e-9;r+=rs){ var yr=Yr(r); sv(s,"text",{x:R+5,y:yr+3.5,"font-size":"9.5",fill:col("--bps-rain")},String(rIn?Math.round(r*10)/10:Math.round(r))); }
+      sv(s,"text",{x:L-5,y:7,"text-anchor":"end","font-size":"8.5","font-weight":"700",fill:col("--bps-mut")},unit==="F"?"°F":"°C");
+      sv(s,"text",{x:R+5,y:7,"font-size":"8.5","font-weight":"700",fill:col("--bps-rain")},rIn?"in":"mm");
+      pr.forEach(function(p,i){ var h=B-Yr(p); sv(s,"rect",{x:X(i)-7,y:B-h,width:14,height:Math.max(h,0),rx:3,fill:col("--bps-rain"),"fill-opacity":".45"}); });
       var pt=function(a,i){return X(i).toFixed(1)+","+Y(a[i]).toFixed(1);};
-      var area="M"+c.hi.map(function(v,i){return pt(c.hi,i);}).join("L");
-      for(var j=11;j>=0;j--) area+="L"+pt(c.lo,j); area+="Z";
-      n("path",{d:area,fill:"url(#"+gid+")"});
-      function line(a,color,w,dash){ n("path",{d:a.map(function(v,i){return (i?"L":"M")+pt(a,i);}).join(""),fill:"none",stroke:color,"stroke-width":w,"stroke-dasharray":dash||"none","stroke-linecap":"round","stroke-linejoin":"round"}); }
+      var area="M"+c.hi.map(function(v,i){return pt(c.hi,i);}).join("L"); for(var j=11;j>=0;j--) area+="L"+pt(c.lo,j); area+="Z";
+      sv(s,"path",{d:area,fill:"url(#"+gid+")"});
+      function line(a,color,w,dash){ sv(s,"path",{d:a.map(function(v,i){return (i?"L":"M")+pt(a,i);}).join(""),fill:"none",stroke:color,"stroke-width":w,"stroke-dasharray":dash||"none","stroke-linecap":"round","stroke-linejoin":"round"}); }
       line(c.lo,col("--bps-cool"),1.8); line(c.hi,col("--bps-hot"),2.2); line(c.p90m,col("--bps-p90"),1.4,"3 3");
-      var hm=c.hi.indexOf(Math.max.apply(null,c.hi)); n("circle",{cx:X(hm),cy:Y(c.hi[hm]),r:3.2,fill:col("--bps-hot"),stroke:col("--bps-el"),"stroke-width":1.5});
-      "JFMAMJJASOND".split("").forEach(function(m,i){ var t=n("text",{x:X(i),y:H-4,"text-anchor":"middle","font-size":"9.5","font-weight":"600",fill:col("--bps-mut")}); t.textContent=m; });
+      var hm=c.hi.indexOf(Math.max.apply(null,c.hi)); sv(s,"circle",{cx:X(hm),cy:Y(c.hi[hm]),r:3.2,fill:col("--bps-hot"),stroke:col("--bps-el"),"stroke-width":1.5});
+      "JFMAMJJASOND".split("").forEach(function(m,i){ sv(s,"text",{x:X(i),y:B+13,"text-anchor":"middle","font-size":"9.5","font-weight":"700",fill:col("--bps-mut")},m); });
+      sv(s,"text",{x:(L+R)/2,y:H-2,"text-anchor":"middle","font-size":"8.5",fill:col("--bps-mut")},"Average year in habitat · rain per month");
       var wrap=el("div","bps-spark"); wrap.appendChild(s);
       var lgd=el("div","bps-leg");
-      [["--bps-hot","Avg high"],["--bps-cool","Avg low"],["--bps-p90","Hot days (p90)","is-dash"],["--bps-moist","Rain","is-bar"]].forEach(function(p){
+      [["--bps-hot","Avg high"],["--bps-cool","Avg low"],["--bps-p90","Hot days (p90)","is-dash"],["--bps-rain","Rain","is-bar"]].forEach(function(p){
         var sp=el("span"); var i=el("i",p[2]||null); i.style.background=col(p[0]); sp.appendChild(i); sp.appendChild(document.createTextNode(p[1])); lgd.appendChild(sp); });
       wrap.appendChild(lgd); return wrap;
     }
@@ -443,10 +736,10 @@ details.bps-seo a{color:#f2849a}
     // ---- plot
     function drawPlot(){
       plot.innerHTML="";
-      var ns="http://www.w3.org/2000/svg", W=640,H=380,L=70,R=625,Tp=16,B=330;
-      var s=document.createElementNS(ns,"svg"); s.setAttribute("viewBox","0 0 "+W+" "+H);
+      var W=640,H=380,L=70,R=625,Tp=16,B=330;
+      var s=document.createElementNS(NS,"svg"); s.setAttribute("viewBox","0 0 "+W+" "+H);
       s.innerHTML='<defs><filter id="bps-glow" x="-1" y="-1" width="3" height="3"><feGaussianBlur stdDeviation="3.5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>';
-      function n(t,a,txt){var e=document.createElementNS(ns,t); for(var k in a) e.setAttribute(k,a[k]); if(txt!=null) e.textContent=txt; s.appendChild(e); return e;}
+      var n=function(t,a,txt){return sv(s,t,a,txt);};
       var have=T.filter(function(x){return x.clim;}), lo=24, hi=44;
       var X=function(v){return L+(v-lo)/(hi-lo)*(R-L);}, Y=function(lvl){return B-(lvl-.5)/4*(B-Tp);};
       BANDS.forEach(function(b){ var y0=Y(b.lvl+.5), y1=Y(b.lvl-.5);
@@ -460,43 +753,48 @@ details.bps-seo a{color:#f2849a}
       have.forEach(function(x){
         var b=bandOf(x.band), h=0; for(var i=0;i<x.id.length;i++) h=(h*31+x.id.charCodeAt(i))>>>0;
         var jy=((h%1000)/1000-.5)*0.62, cx=X(x.clim.p90), cy=Y(b.lvl+jy);
-        var match=!v || norm(short(x)).indexOf(v)>-1 || (x.alias||[]).some(function(a){return norm(a).indexOf(v)>-1;});
-        var isSel=x.id===sel;
+        var match=matchQ(x,v) && (!cellSel || cellSel.ids.indexOf(x.id)>-1), isSel=x.id===sel;
         var dot=n("circle",{cx:cx,cy:cy,r:isSel?8:5.5,fill:col(b.c),stroke:isSel?"#fff":col("--bps-card"),"stroke-width":isSel?2.2:1.4,
           opacity:match?1:.15,style:"cursor:pointer"}); if(isSel) dot.setAttribute("filter","url(#bps-glow)");
-        var tt=document.createElementNS(ns,"title"); tt.textContent=x.name+" · "+x.band+" · ≈"+deg(x.clim.p90); dot.appendChild(tt);
-        dot.addEventListener("click",function(){select(x.id,true);});
+        sv(dot,"title",{},x.name+" · "+x.band+" · ≈"+deg(x.clim.p90));
+        dot.addEventListener("click",function(){select(x.id);});
         if(isSel || (v && match)) n("text",{x:cx+11,y:cy+4,"font-size":"13","font-style":"italic","font-weight":"600","font-family":col("--bps-serif"),
           fill:col("--bps-fg"),stroke:col("--bps-card"),"stroke-width":3,"paint-order":"stroke"},short(x));
       });
       plot.appendChild(s);
       var miss=T.filter(function(x){return !x.clim;}).map(short);
-      plot.appendChild(el("p","bps-np","Not plotted (no climate-map data): "+miss.join(", ")+"."));
+      if(miss.length) plot.appendChild(el("p","bps-np","Not plotted (no climate data): "+miss.join(", ")+"."));
     }
 
     function sundew(){ // original line drawing: rosette of round leaves with glandular hairs and dew
       var o='<svg viewBox="-60 -60 120 120" aria-hidden="true"><g stroke-linecap="round">';
       for(var i=0;i<8;i++){ var a=i*Math.PI/4+.2, r=34, cx=Math.cos(a)*r, cy=Math.sin(a)*r;
-        o+='<line x1="0" y1="0" x2="'+(cx*.72).toFixed(1)+'" y2="'+(cy*.72).toFixed(1)+'" stroke="#6f8f5a" stroke-width="2.4"/>';
-        o+='<circle cx="'+cx.toFixed(1)+'" cy="'+cy.toFixed(1)+'" r="9" fill="#7a3a34" stroke="#b5564a" stroke-width="1"/>';
+        o+='<line x1="0" y1="0" x2="'+(cx*.72).toFixed(1)+'" y2="'+(cy*.72).toFixed(1)+'" stroke="#8fae5c" stroke-width="2.4"/>';
+        o+='<circle cx="'+cx.toFixed(1)+'" cy="'+cy.toFixed(1)+'" r="9" fill="#7b3b26" stroke="#c9573a" stroke-width="1"/>';
         for(var k=0;k<9;k++){ var b2=a-1.25+k*2.5/8, x1=cx+Math.cos(b2)*8, y1=cy+Math.sin(b2)*8, x2=cx+Math.cos(b2)*15, y2=cy+Math.sin(b2)*15;
-          o+='<line x1="'+x1.toFixed(1)+'" y1="'+y1.toFixed(1)+'" x2="'+x2.toFixed(1)+'" y2="'+y2.toFixed(1)+'" stroke="#c9524f" stroke-width="1.1"/>';
-          o+='<circle cx="'+x2.toFixed(1)+'" cy="'+y2.toFixed(1)+'" r="1.9" fill="#f2849a" fill-opacity=".9"/>'; } }
-      o+='<circle r="6" fill="#8aa86f"/><circle r="2.5" fill="#c8d9a8"/></g></svg>';
+          o+='<line x1="'+x1.toFixed(1)+'" y1="'+y1.toFixed(1)+'" x2="'+x2.toFixed(1)+'" y2="'+y2.toFixed(1)+'" stroke="#d0613f" stroke-width="1.1"/>';
+          o+='<circle cx="'+x2.toFixed(1)+'" cy="'+y2.toFixed(1)+'" r="1.9" fill="#f3d27a" fill-opacity=".95"/>'; } }
+      o+='<circle r="6" fill="#95b25d"/><circle r="2.5" fill="#dfe8bf"/></g></svg>';
       return o;
+    }
+    function emptyDetail(){
+      det.innerHTML=""; det.style.removeProperty("--b");
+      var e=el("div","bps-empty"); e.innerHTML=sundew(); e.appendChild(el("b",null,"Pick a species"));
+      e.appendChild(document.createTextNode("Search, tap the map, or tap any name to see photos, habitat, soil and summer heat."));
+      det.appendChild(e);
     }
     function closeSheet(){ det.classList.remove("is-open"); }
     document.addEventListener("click",function(e){
-      if(!det.classList.contains("is-open") || det.contains(e.target)) return;
-      if(e.target.closest && (e.target.closest(".bps-chip") || plot.contains(e.target))) return;
+      if(!det.classList.contains("is-open") || det.contains(e.target) || document.querySelector(".bps-lb")) return;
+      if(e.target.closest && (e.target.closest(".bps-chip") || e.target.closest(".bps-mini") || plot.contains(e.target) || mapEl.contains(e.target))) return;
       closeSheet();
     });
-    document.addEventListener("keydown",function(e){ if(e.key==="Escape") closeSheet(); });
+    document.addEventListener("keydown",function(e){ if(e.key==="Escape" && !document.querySelector(".bps-lb")) closeSheet(); });
     var ty=null;
-    det.addEventListener("touchstart",function(e){ ty = det.scrollTop<=0 ? e.touches[0].clientY : null; },{passive:true});
+    det.addEventListener("touchstart",function(e){ ty = (det.scrollTop<=0 && !(e.target.closest && e.target.closest(".bps-stage,.bps-thumbs,.bps-forms"))) ? e.touches[0].clientY : null; },{passive:true});
     det.addEventListener("touchend",function(e){ if(ty!=null && e.changedTouches[0].clientY-ty>70) closeSheet(); ty=null; },{passive:true});
-    det.appendChild((function(){ var e=el("div","bps-empty"); e.innerHTML=sundew(); e.appendChild(el("b",null,"Pick a species"));
-      e.appendChild(document.createTextNode("Search above or tap any name to see its habitat, soil and summer heat.")); return e; })());
+
+    buildMap(); setUnit(unit); emptyDetail(); drawMap(); loadGallery();
   }
 
   function track(evt, label){ try{ if(window.gtag) window.gtag("event", evt, {species: label}); }catch(e){} }

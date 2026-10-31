@@ -22,7 +22,7 @@ head = """/* Bogman Plantenstein — Pygmy Sundew Habitat Finder
   window.BPS_BASE = (cur && cur.src) ? cur.src.replace(/[^\\/?#]*([?#].*)?$/, "") : "";
   if(!document.getElementById("bps-font")){
     var lk = document.createElement("link"); lk.id = "bps-font"; lk.rel = "stylesheet";
-    lk.href = "https://fonts.googleapis.com/css2?family=Lora:ital,wght@1,500;1,600&display=swap"; document.head.appendChild(lk);
+    lk.href = "https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,600;1,500;1,600&display=swap"; document.head.appendChild(lk);
   }
   if(!document.getElementById("bps-style")){
     var st = document.createElement("style"); st.id = "bps-style"; st.textContent = CSS; document.head.appendChild(st);
@@ -39,7 +39,7 @@ D = json.load(open(os.path.join(ROOT, 'public', 'pygmy-data.json')))
 order = {'Dry': 0, 'Drained': 1, 'Moist': 2, 'Wet': 3}
 rows = []
 for t in sorted(D['taxa'], key=lambda t: (order[t['band']], t['hyb'], t['name'])):
-    extra = ' Often goes dormant in summer in cultivation.' if t.get('dorm') else ''
+    extra = ''
     rows.append('    <li><i>%s</i> — %s soil. %s%s</li>' % (html.escape(t['name']), t['band'].lower(), html.escape(t['hab']), extra))
 seo = ('<details class="bps-seo">\n  <summary>All pygmy sundews by soil moisture (text list)</summary>\n  <ul>\n'
        + '\n'.join(rows) + '\n  </ul>\n</details>')
