@@ -372,18 +372,25 @@
       loadShop().then(function(items){
         row.innerHTML="";
         if(!items){ var f=el("a","bps-shop","Shop pygmy sundews"); f.href=SHOP_URL; f.target="_blank"; f.rel="noopener"; row.appendChild(f); return; }
-        var hits=items.filter(function(it){ return re.test(it.t); });
+        // a species must not pick up cultivated crosses such as "omissa x pulchella"
+        var crossRe=new RegExp(ep.replace(/[.*+?^${}()|[\]\\]/g,"\\$&")+"\\s*(?:x|×)\\s+[a-z]","i");
+        var hits=items.filter(function(it){ return re.test(it.t) && (hyb || !crossRe.test(it.t)); });
         if(!hits.length) return;
         var kind=function(t){ return /^\s*gemmae/i.test(t)?"Gemmae":/^\s*seeds?/i.test(t)?"Seeds":"Plant"; };
         var order={Plant:0,Gemmae:1,Seeds:2};
-        hits.sort(function(a,b){ return order[kind(a.t)]-order[kind(b.t)] || a.t.localeCompare(b.t); });
+        hits.sort(function(a,b){ return (b.s-a.s) || order[kind(a.t)]-order[kind(b.t)] || a.t.localeCompare(b.t); });
         row.appendChild(el("span","bps-shoplab","In the shop:"));
-        hits.forEach(function(it){
+        var MAXL=4;
+        hits.slice(0,MAXL).forEach(function(it){
           var a=el("a","bps-shop"+(it.s?"":" is-out")); a.href=it.u; a.target="_blank"; a.rel="noopener";
-          var form=(it.t.match(/\(([^)]+)\)/)||[])[1];
+          var form=(it.t.match(/\(([^)]+)\)/)||it.t.match(/"([^"]+)"/)||[])[1];
           a.textContent=kind(it.t)+(form?" ("+form+")":"")+(it.s?"":" · sold out");
           row.appendChild(a);
         });
+        if(hits.length>MAXL){
+          var more=el("a","bps-shop","+"+(hits.length-MAXL)+" more"); more.target="_blank"; more.rel="noopener";
+          more.href="/search?q="+encodeURIComponent(x.hyb ? x.name : "Drosera "+ep); row.appendChild(more);
+        }
       });
     }
 
