@@ -20,6 +20,10 @@ head = """/* Bogman Plantenstein — Pygmy Sundew Habitat Finder
   var MARKUP = %s;
   var cur = document.currentScript;
   window.BPS_BASE = (cur && cur.src) ? cur.src.replace(/[^\\/?#]*([?#].*)?$/, "") : "";
+  if(!document.getElementById("bps-font")){
+    var lk = document.createElement("link"); lk.id = "bps-font"; lk.rel = "stylesheet";
+    lk.href = "https://fonts.googleapis.com/css2?family=Lora:ital,wght@1,500;1,600&display=swap"; document.head.appendChild(lk);
+  }
   if(!document.getElementById("bps-style")){
     var st = document.createElement("style"); st.id = "bps-style"; st.textContent = CSS; document.head.appendChild(st);
   }
@@ -43,7 +47,7 @@ seo = ('<details class="bps-seo">\n  <summary>All pygmy sundews by soil moisture
 snippet = """<!-- Bogman Pygmy Sundew Habitat Finder. Paste into a Squarespace Code Block (HTML mode). -->
 <div id="bps-root"></div>
 <script src="%swidget.js" defer></script>
-<style>.bps-seo{margin-top:12px;font-size:13px;color:#736b5e}.bps-seo summary{cursor:pointer}.bps-seo ul{padding-left:18px}</style>
+<style>.bps-seo{margin-top:12px;font-size:13px;color:#b9b3a6}.bps-seo summary{cursor:pointer}.bps-seo ul{padding-left:18px}</style>
 %s
 """ % (SITE, seo)
 os.makedirs(os.path.join(ROOT, 'embed'), exist_ok=True)
@@ -51,7 +55,7 @@ open(os.path.join(ROOT, 'embed', 'squarespace-code-block.html'), 'w').write(snip
 
 test = """<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Pygmy Sundew Habitat Finder — test page</title><meta name="robots" content="noindex">
-<style>body{font-family:system-ui,sans-serif;max-width:1100px;margin:24px auto;padding:0 16px;background:#fff}</style></head>
+<style>body{font-family:system-ui,sans-serif;max-width:1100px;margin:24px auto;padding:0 16px;background:#38383b;color:#fff}</style></head>
 <body><h1 style="font-size:20px">Pygmy Sundew Habitat Finder (test page)</h1>
 <div id="bps-root"></div><script src="widget.js"></script></body></html>
 """
