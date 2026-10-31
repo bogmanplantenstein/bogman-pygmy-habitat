@@ -1,0 +1,433 @@
+<div class="bps" id="bps-root">
+  <div class="bps-top">
+    <label class="bps-search" for="bps-q">
+      <svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="8.5" cy="8.5" r="5.5"/><path d="M13 13l4 4"/></svg>
+      <input id="bps-q" type="search" placeholder="Find a species, e.g. roseana" autocomplete="off" spellcheck="false">
+    </label>
+    <div class="bps-tools">
+      <div class="bps-seg" role="tablist" aria-label="View">
+        <button type="button" role="tab" data-view="shelf" aria-selected="true">Moisture</button>
+        <button type="button" role="tab" data-view="plot" aria-selected="false">Moisture × heat</button>
+      </div>
+      <div class="bps-seg bps-units" aria-label="Temperature units">
+        <button type="button" data-u="F">°F</button><button type="button" data-u="C">°C</button>
+      </div>
+    </div>
+  </div>
+  <p class="bps-hint" id="bps-hint">How wet to keep the soil in the growing season, based on each species' habitat. <span class="bps-key"><span class="bps-moon" aria-hidden="true"></span> often goes dormant in summer in cultivation</span>. Tap a species for details.</p>
+  <div class="bps-body">
+    <div class="bps-main">
+      <div class="bps-shelf" id="bps-shelf"></div>
+      <div class="bps-plot" id="bps-plot" hidden></div>
+    </div>
+    <aside class="bps-detail" id="bps-detail" aria-live="polite"></aside>
+  </div>
+  <details class="bps-src">
+    <summary>Sources &amp; method</summary>
+    <ul>
+      <li>Soil type: Nunn &amp; Lambers (2017), <a href="https://cpn.carnivorousplants.org/articles/CPNv46n1p13_19.pdf" target="_blank" rel="noopener">Carnivorous Plant Newsletter 46(1)</a>.</li>
+      <li>Habitat &amp; range: <a href="https://carnivorousplants.org/cp/taxonomy/pygmyDrosera" target="_blank" rel="noopener">ICPS Guide to the Pygmy Drosera</a>, after Lowrie et al. (2017); <a href="https://www.fierceflora.com/" target="_blank" rel="noopener">Fierce Flora</a> (Boaz Ng) field profiles; <a href="https://florabase.dbca.wa.gov.au/" target="_blank" rel="noopener">FloraBase</a>; the D. micra type specimen label (Lowrie &amp; Conran 2014); Robinson et al. (2018) for D. albonotata.</li>
+      <li>Typical hot extreme: <a href="https://www.burymeinthebog.com/map" target="_blank" rel="noopener">Bogman Climate Map</a>, the hottest month's 90th-percentile daily high from NASA POWER data. Grid cells are ~50 km, so treat values as ±3°C.</li>
+      <li>Moisture band: scored from each species' published habitat descriptions. A guide, not a measurement.</li>
+      <li>Rainfall, monthly highs and lows: <a href="http://www.bom.gov.au/climate/averages/" target="_blank" rel="noopener">Australian Bureau of Meteorology</a> long-term averages from 27 stations, weighted to each species' records.</li>
+      <li>Dry months: months where average rainfall (mm) is less than twice the average temperature (°C), the standard Bagnouls–Gaussen test. 5–6 dry months is a dry summer; 7 or more is a long, dry summer.</li>
+      <li>Climate uses research-grade records only, inside the species' native range.</li>
+      <li>Summer dormancy flag: species that growers report going dormant in cultivation (<a href="https://www.terraforums.com/forums/threads/pygmies-dormant-now.123814" target="_blank" rel="noopener">Terraforums</a> threads). Anecdotal; some growers keep the same species growing all year.</li>
+    </ul>
+  </details>
+</div>
+
+<style>
+.bps{--bps-bg:#fbf9f4;--bps-card:#fff;--bps-fg:#2a2620;--bps-mut:#736b5e;--bps-line:#e3dccf;--bps-acc:#2f5f7a;
+  --bps-dry:#d8c08a;--bps-drained:#b07a3e;--bps-moist:#4b8a80;--bps-wet:#2c5876;
+  font-family:inherit;color:var(--bps-fg);background:var(--bps-bg);border:1px solid var(--bps-line);border-radius:10px;
+  padding:16px;line-height:1.45;font-size:15px;box-sizing:border-box;position:relative}
+.bps *{box-sizing:border-box}
+.bps [hidden]{display:none!important}
+.bps button{font:inherit;cursor:pointer}
+.bps-top{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between}
+.bps-search{flex:1 1 260px;display:flex;align-items:center;gap:8px;background:var(--bps-card);border:1px solid var(--bps-line);
+  border-radius:999px;padding:8px 14px}
+.bps-search svg{width:17px;height:17px;fill:none;stroke:var(--bps-mut);stroke-width:2;flex:none}
+.bps-search input{border:0;outline:0;background:none;font:inherit;width:100%;color:var(--bps-fg);min-width:0}
+.bps-search:focus-within{border-color:var(--bps-acc);box-shadow:0 0 0 3px rgba(47,95,122,.15)}
+.bps-tools{display:flex;gap:8px;flex-wrap:wrap}
+.bps-seg{display:inline-flex;background:var(--bps-card);border:1px solid var(--bps-line);border-radius:999px;padding:3px}
+.bps-seg button{border:0;background:none;color:var(--bps-mut);padding:5px 12px;border-radius:999px;font-size:13px;font-weight:600}
+.bps-seg button[aria-selected="true"],.bps-seg button[aria-pressed="true"]{background:var(--bps-fg);color:var(--bps-card)}
+.bps-hint{color:var(--bps-mut);font-size:13px;margin:10px 2px 12px}
+.bps-body{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:16px;align-items:start}
+.bps-shelf{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.bps-col{background:var(--bps-card);border:1px solid var(--bps-line);border-radius:8px;overflow:hidden;min-width:0}
+.bps-colh{padding:9px 10px 8px;display:flex;align-items:center;gap:8px;border-bottom:1px solid var(--bps-line);width:100%;
+  background:none;border-left:0;border-right:0;border-top:0;text-align:left;color:var(--bps-fg)}
+.bps-colh b{font-size:14px}
+.bps-colh small{display:block;color:var(--bps-mut);font-size:11.5px;font-weight:400;line-height:1.25}
+.bps-colh .bps-n{margin-left:auto;font-size:12px;color:var(--bps-mut)}
+.bps-drop{width:16px;height:20px;flex:none}
+.bps-chips{display:flex;flex-wrap:wrap;gap:5px;padding:9px}
+.bps-chip{border:1px solid var(--bps-line);background:var(--bps-bg);color:var(--bps-fg);border-radius:999px;padding:3px 10px;
+  font-size:13px;font-style:italic;transition:opacity .15s,background .15s}
+.bps-chip:hover{border-color:var(--bps-fg)}
+.bps-chip.is-sel{background:var(--bps-fg);color:var(--bps-card);border-color:var(--bps-fg)}
+.bps-chip.is-dim{opacity:.22}
+.bps-chip.is-hyb{border-style:dashed}
+.bps-moon{display:inline-block;width:9px;height:9px;border-radius:50%;margin-left:5px;vertical-align:1px;
+  box-shadow:inset -3px 0 0 0 var(--bps-drained);flex:none}
+.bps-chip.is-sel .bps-moon{box-shadow:inset -3px 0 0 0 var(--bps-dry)}
+.bps-key{white-space:nowrap}
+.bps-key .bps-moon{margin:0 2px 0 4px}
+.bps-dorm{display:flex;gap:9px;align-items:flex-start;margin-top:10px;padding:9px 10px;border-radius:6px;
+  border:1px solid var(--bps-drained);background:var(--bps-bg);font-size:13px}
+.bps-dorm .bps-moon{width:13px;height:13px;margin:3px 0 0;box-shadow:inset -4px 0 0 0 var(--bps-drained)}
+.bps-dorm b{display:block;font-size:13.5px}
+.bps-dorm span{color:var(--bps-mut)}
+.bps-chip:focus-visible,.bps-seg button:focus-visible,.bps-colh:focus-visible{outline:2px solid var(--bps-acc);outline-offset:2px}
+.bps-detail{background:var(--bps-card);border:1px solid var(--bps-line);border-radius:8px;padding:16px;position:sticky;top:16px;min-height:200px}
+.bps-empty{color:var(--bps-mut);font-size:14px}
+.bps-empty b{display:block;color:var(--bps-fg);font-size:15px;margin-bottom:6px}
+.bps-close{display:none;position:absolute;right:10px;top:8px;border:0;background:none;font-size:24px;line-height:1;color:var(--bps-mut);padding:4px 8px}
+.bps-d-name{font-style:italic;font-size:20px;font-weight:700;margin:0 28px 2px 0;line-height:1.2}
+.bps-d-par{color:var(--bps-mut);font-size:13px;margin:0 0 10px}
+.bps-photos{display:flex;gap:6px;overflow-x:auto;scroll-snap-type:x mandatory;margin:8px 0 2px;border-radius:6px}
+.bps-photos img{height:170px;width:auto;max-width:none;flex:none;border-radius:6px;scroll-snap-align:start;object-fit:cover;background:var(--bps-line)}
+.bps-photos img:only-child{width:100%;height:200px}
+.bps-credit{font-size:11px;color:var(--bps-mut);margin:0 0 4px}
+.bps-meters{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:10px 0}
+.bps-m{border-radius:6px;padding:9px 10px;background:var(--bps-bg)}
+.bps-m span{display:block;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--bps-mut)}
+.bps-m b{font-size:19px;display:block;line-height:1.25;font-variant-numeric:tabular-nums}
+.bps-m small{color:var(--bps-mut);font-size:12px}
+.bps-m3{grid-column:1 / -1}
+.bps-m3h{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap}
+.bps-m3h b{font-size:16px}
+.bps-strip{display:grid;grid-template-columns:repeat(12,1fr);gap:2px;margin-top:6px}
+.bps-strip i{font-style:normal;font-size:10px;text-align:center;padding:2px 0;border-radius:2px;background:var(--bps-line);color:var(--bps-mut)}
+.bps-strip i.is-dry{background:var(--bps-dry);color:var(--bps-fg);font-weight:700}
+.bps-gauge{display:flex;gap:3px;margin-top:5px}
+.bps-gauge i{flex:1;height:6px;border-radius:2px;background:var(--bps-line)}
+.bps-spark{margin:6px 0 2px}
+.bps-spark svg{width:100%;height:auto;display:block}
+.bps-leg{display:flex;flex-wrap:wrap;gap:4px 12px;font-size:11.5px;color:var(--bps-mut);margin-bottom:8px}
+.bps-leg i{display:inline-block;width:12px;height:3px;border-radius:2px;vertical-align:middle;margin-right:4px}
+.bps-d dt{font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--bps-mut);margin-top:10px}
+.bps-d dd{margin:2px 0 0;font-size:14px}
+.bps-d dl{margin:0}
+.bps-note{font-size:13px;color:var(--bps-mut);background:var(--bps-bg);border-radius:6px;padding:7px 9px;margin-top:10px}
+.bps-links{display:flex;flex-wrap:wrap;gap:6px 14px;margin-top:12px;font-size:13px}
+.bps-links a{color:var(--bps-acc);font-weight:600;text-decoration:none}
+.bps-links a:hover{text-decoration:underline}
+.bps-shoprow{display:flex;flex-wrap:wrap;gap:4px 10px;margin-top:8px;font-size:12px;color:var(--bps-mut)}
+.bps-shoprow a{color:var(--bps-acc);text-decoration:none}
+.bps-shoprow a:hover{text-decoration:underline}
+.bps-shoprow a.is-out{color:var(--bps-mut)}
+.bps-cite{font-size:11.5px;color:var(--bps-mut);margin:10px 0 0;border-top:1px solid var(--bps-line);padding-top:8px}
+.bps-cite a{color:var(--bps-mut);text-decoration:underline}
+.bps-plot svg{width:100%;height:auto;display:block;background:var(--bps-card);border:1px solid var(--bps-line);border-radius:8px}
+.bps-plot .bps-np{font-size:12.5px;color:var(--bps-mut);margin-top:8px}
+.bps-src{margin-top:14px;font-size:12.5px;color:var(--bps-mut)}
+.bps-src summary{cursor:pointer;font-weight:600}
+.bps-src ul{margin:6px 0 0;padding-left:18px}
+.bps-src a{color:var(--bps-acc)}
+@media (max-width:860px){
+  .bps-body{grid-template-columns:1fr}
+  .bps-shelf{grid-template-columns:1fr 1fr}
+  .bps-detail{position:fixed;left:0;right:0;bottom:0;top:auto;z-index:9999;max-height:78vh;overflow-y:auto;border-radius:14px 14px 0 0;
+    box-shadow:0 -8px 30px rgba(0,0,0,.18);transform:translateY(110%);visibility:hidden;transition:transform .22s ease,visibility 0s .22s;
+    padding:18px max(16px,env(safe-area-inset-right,0px)) calc(18px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px))}
+  .bps-detail.is-open{transform:none;visibility:visible;transition:transform .22s ease}
+  .bps-detail .bps-empty{display:none}
+  .bps-close{display:block}
+}
+@media (max-width:520px){.bps{padding:12px}.bps-shelf{grid-template-columns:1fr}}
+@media (prefers-reduced-motion:reduce){.bps *{transition:none!important}}
+</style>
+
+<script>
+(function(){
+  var BASE = window.BPS_BASE || "";                 // set by widget.js from its own URL
+  var DATA_URL = window.BPS_DATA_URL || (BASE ? BASE + "pygmy-data.json" : null);
+  var PHOTO_URL = BASE ? BASE + "photos/" : null;
+  var MAP_URL = "https://www.burymeinthebog.com/map?sp=";
+  var SHOP_URL = "/shop";
+  var BANDS = [
+    {k:"Dry",     c:"--bps-dry",     d:"Deep sand or gravel summits; drains fast", lvl:1},
+    {k:"Drained", c:"--bps-drained", d:"Laterite, loam or clayey sand; free-draining", lvl:2},
+    {k:"Moist",   c:"--bps-moist",   d:"Edges of winter-wet hollows, seeps, streams", lvl:3},
+    {k:"Wet",     c:"--bps-wet",     d:"Swamp edges and peat; may flood in winter", lvl:4}
+  ];
+  var US = ["US","LR","MM","PR","GU","VI","AS","MP","BS","BZ","KY","PW","FM","MH"];
+
+  function boot(root){
+    if(!root || root.getAttribute("data-bps-ready")) return;
+    root.setAttribute("data-bps-ready","1");
+    if(window.BPS_PREP) window.BPS_PREP(root);
+    if(window.BPS_DATA) start(root, window.BPS_DATA);
+    else if(DATA_URL) fetch(DATA_URL).then(function(r){return r.json();}).then(function(d){start(root,d);})
+      .catch(function(){root.querySelector("#bps-shelf").textContent="Couldn't load species data. Refresh to try again.";});
+  }
+
+  function start(root, D){
+    var T = D.taxa, sel = null, view = "shelf", PHOTOS = {};
+    if(PHOTO_URL) fetch(PHOTO_URL + "manifest.json").then(function(r){return r.ok ? r.json() : {};})
+      .then(function(m){ PHOTOS = m || {}; if(sel) renderDetail(find(sel)); }).catch(function(){});
+    var unit = pickUnit();
+    var $ = function(s){return root.querySelector(s);};
+    var shelf=$("#bps-shelf"), plot=$("#bps-plot"), det=$("#bps-detail"), q=$("#bps-q");
+    var css = getComputedStyle(root);
+    var col = function(v){return css.getPropertyValue(v).trim();};
+    var bandOf = function(k){for(var i=0;i<BANDS.length;i++) if(BANDS[i].k===k) return BANDS[i];};
+    var short = function(t){return t.name.replace(/^Drosera /,"");};
+    var deg = function(c){ if(c==null) return "—"; return unit==="F" ? Math.round(c*9/5+32)+"°F" : Math.round(c)+"°C"; };
+
+    function pickUnit(){
+      try{ var s=localStorage.getItem("bps-unit"); if(s==="F"||s==="C") return s; }catch(e){}
+      var langs = navigator.languages || [navigator.language||""];
+      for(var i=0;i<langs.length;i++){ var m=/-([A-Za-z]{2})\b/.exec(langs[i]||""); if(m) return US.indexOf(m[1].toUpperCase())>-1 ? "F":"C"; }
+      return "F";
+    }
+    function el(tag, cls, txt){ var n=document.createElement(tag); if(cls) n.className=cls; if(txt!=null) n.textContent=txt; return n; }
+    function drop(lvl, color){
+      var ns="http://www.w3.org/2000/svg", s=document.createElementNS(ns,"svg"); s.setAttribute("viewBox","0 0 16 20"); s.setAttribute("class","bps-drop");
+      var id="bpsd"+lvl+Math.random().toString(36).slice(2,6);
+      var cp=document.createElementNS(ns,"clipPath"); cp.setAttribute("id",id);
+      var p=document.createElementNS(ns,"path"); p.setAttribute("d","M8 1C8 1 2 8.5 2 12.5a6 6 0 0012 0C14 8.5 8 1 8 1z"); cp.appendChild(p); s.appendChild(cp);
+      var o=document.createElementNS(ns,"path"); o.setAttribute("d",p.getAttribute("d")); o.setAttribute("fill","none"); o.setAttribute("stroke",color); o.setAttribute("stroke-width","1.4"); s.appendChild(o);
+      var r=document.createElementNS(ns,"rect"); var h=19*lvl/4; r.setAttribute("x","0"); r.setAttribute("y",String(19.5-h)); r.setAttribute("width","16"); r.setAttribute("height",String(h));
+      r.setAttribute("fill",color); r.setAttribute("clip-path","url(#"+id+")"); s.appendChild(r);
+      return s;
+    }
+
+    // ---- shelf
+    var chips = {};
+    BANDS.forEach(function(b){
+      var c=el("section","bps-col"), h=el("div","bps-colh");
+      h.appendChild(drop(b.lvl, col(b.c)));
+      var t=el("div"); t.appendChild(el("b",null,b.k)); t.appendChild(el("small",null,b.d)); h.appendChild(t);
+      var list=T.filter(function(x){return x.band===b.k;}).sort(function(a,b2){return a.hyb-b2.hyb || short(a).localeCompare(short(b2));});
+      h.appendChild(el("span","bps-n",String(list.length)));
+      c.appendChild(h);
+      var wrap=el("div","bps-chips");
+      list.forEach(function(x){
+        var ch=el("button","bps-chip"+(x.hyb?" is-hyb":""),short(x)); ch.type="button";
+        if(x.dorm){ var mo=el("span","bps-moon"); mo.setAttribute("aria-hidden","true"); ch.appendChild(mo); }
+        ch.setAttribute("aria-label", x.name+", "+x.band+(x.dorm?", often dormant in summer":""));
+        ch.addEventListener("click",function(){ select(x.id, true); });
+        chips[x.id]=ch; wrap.appendChild(ch);
+      });
+      c.appendChild(wrap); shelf.appendChild(c);
+    });
+
+    // ---- search
+    function norm(s){return (s||"").toLowerCase().replace(/drosera|×|\bx\b|[^a-z]/g,"");}
+    q.addEventListener("input", function(){
+      var v=norm(q.value), hits=[];
+      T.forEach(function(x){
+        var keys=[short(x)].concat(x.alias||[]).concat(x.parents?[x.parents]:[]);
+        var ok=!v || keys.some(function(k){return norm(k).indexOf(v)>-1;});
+        if(chips[x.id]) chips[x.id].classList.toggle("is-dim", !ok);
+        if(ok && v) hits.push(x);
+      });
+      var starts = hits.filter(function(x){ return norm(short(x)).indexOf(v)===0 || (x.alias||[]).some(function(a){return norm(a).indexOf(v)===0;}); });
+      var exact = hits.filter(function(x){ return norm(short(x))===v || (x.alias||[]).some(function(a){return norm(a)===v;}); });
+      var pick = exact.length===1 ? exact[0] : hits.length===1 ? hits[0] : (starts.length===1 ? starts[0] : null);
+      if(v && v.length>=3 && pick && pick.id!==sel) select(pick.id, false);
+      if(view==="plot") drawPlot();
+    });
+    q.addEventListener("keydown", function(e){ if(e.key==="Escape"){ q.value=""; q.dispatchEvent(new Event("input")); } });
+
+    // ---- view + units
+    root.querySelectorAll("[data-view]").forEach(function(b){
+      b.addEventListener("click",function(){
+        view=b.getAttribute("data-view");
+        root.querySelectorAll("[data-view]").forEach(function(o){o.setAttribute("aria-selected", String(o===b));});
+        shelf.hidden = view!=="shelf"; plot.hidden = view!=="plot";
+        if(view==="plot") drawPlot();
+      });
+    });
+    function setUnit(u){
+      unit=u; try{localStorage.setItem("bps-unit",u);}catch(e){}
+      root.querySelectorAll("[data-u]").forEach(function(b){b.setAttribute("aria-pressed", String(b.getAttribute("data-u")===u));});
+      if(sel) renderDetail(find(sel)); if(view==="plot") drawPlot();
+    }
+    root.querySelectorAll("[data-u]").forEach(function(b){ b.addEventListener("click",function(){ setUnit(b.getAttribute("data-u")); }); });
+    setUnit(unit);
+
+    function find(id){ for(var i=0;i<T.length;i++) if(T[i].id===id) return T[i]; }
+    function select(id, fromTap){
+      sel=id; Object.keys(chips).forEach(function(k){chips[k].classList.toggle("is-sel",k===id);});
+      renderDetail(find(id)); det.classList.add("is-open");
+      if(view==="plot") drawPlot();
+      track("species_view", id);
+    }
+
+    // ---- detail
+    function renderDetail(x){
+      det.innerHTML="";
+      var close=el("button","bps-close","×"); close.type="button"; close.setAttribute("aria-label","Close");
+      close.addEventListener("click",function(){det.classList.remove("is-open");});
+      det.appendChild(close);
+      var d=el("div","bps-d");
+      d.appendChild(el("h3","bps-d-name",x.name));
+      d.appendChild(el("p","bps-d-par", x.hyb ? "Natural hybrid: "+x.parents : "Pygmy sundew, south-west Western Australia"));
+      var ph = PHOTOS[x.id];
+      if(ph && ph.length){
+        var g=el("div","bps-photos");
+        ph.slice(0,6).forEach(function(p){
+          var im=document.createElement("img"); im.src=PHOTO_URL+p.f; im.alt=x.name; im.loading="lazy";
+          if(p.w&&p.h){ im.width=p.w; im.height=p.h; }
+          g.appendChild(im);
+        });
+        d.appendChild(g);
+        d.appendChild(el("p","bps-credit","Photo"+(ph.length>1?"s":"")+": "+(ph[0].credit||"Bogman Plantenstein")));
+      }
+      var b=bandOf(x.band), meters=el("div","bps-meters");
+      var m1=el("div","bps-m"); m1.appendChild(el("span",null,"Soil moisture")); m1.appendChild(el("b",null,x.band));
+      var g=el("div","bps-gauge"); for(var i=1;i<=4;i++){ var seg=el("i"); if(i<=b.lvl) seg.style.background=col(b.c); g.appendChild(seg);} m1.appendChild(g);
+      var m2=el("div","bps-m"); m2.appendChild(el("span",null,"Typical hot extreme"));
+      if(x.clim){ m2.appendChild(el("b",null,"≈ "+deg(x.clim.p90))); m2.appendChild(el("small",null,"Hottest month: "+x.clim.hotMonth+" · avg high "+deg(x.clim.avgHigh))); }
+      else { m2.appendChild(el("b",null,"—")); m2.appendChild(el("small",null,"No climate-map data")); }
+      meters.appendChild(m1); meters.appendChild(m2);
+      if(x.clim){
+        var c=x.clim, dryM=[]; for(var mi=0;mi<12;mi++){ if(c.pr[mi] < (c.hi[mi]+c.lo[mi])) dryM.push(mi); }
+        var m3=el("div","bps-m bps-m3"); m3.appendChild(el("span",null,"Dry season in habitat"));
+        var head=el("div","bps-m3h"); head.appendChild(el("b",null,dryM.length+" dry months"));
+        head.appendChild(el("small",null, dryM.length>=7 ? "Long, dry summer" : dryM.length>=5 ? "Dry summer" : "Mild summer with some rain"));
+        m3.appendChild(head);
+        var strip=el("div","bps-strip");
+        "JFMAMJJASOND".split("").forEach(function(L,mi){ var cell=el("i",dryM.indexOf(mi)>-1?"is-dry":"",L); strip.appendChild(cell); });
+        m3.appendChild(strip); meters.appendChild(m3);
+      }
+      d.appendChild(meters);
+      if(x.clim){ d.appendChild(spark(x.clim)); }
+      var dl=el("dl");
+      function row(k,v){ if(!v) return; dl.appendChild(el("dt",null,k)); dl.appendChild(el("dd",null,v)); }
+      row("Habitat", x.hab); row("Range", x.dist); row("Soil type", x.soil ? x.soil.charAt(0).toUpperCase()+x.soil.slice(1) : null);
+      d.appendChild(dl);
+      if(x.dorm){
+        var dn=el("div","bps-dorm"); var dm=el("span","bps-moon"); dm.setAttribute("aria-hidden","true"); dn.appendChild(dm);
+        var dt=el("div"); dt.appendChild(el("b",null,"Often goes dormant in summer"));
+        dt.appendChild(el("span",null,"Growers report it forming a resting bud in summer heat, even when kept wet. Once a bud forms, keep the soil barely damp: dormant buds rot easily in warm, wet soil."+(x.dormNote?" "+x.dormNote:"")));
+        dn.appendChild(dt); d.appendChild(dn);
+      }
+      if(x.note) d.appendChild(el("p","bps-note",x.note));
+      var L=el("div","bps-links");
+      if(x.taxon){ var a=el("a",null,"Climate & photos on the map ↗"); a.href=MAP_URL+x.taxon; a.target="_blank"; a.rel="noopener"; L.appendChild(a); }
+      d.appendChild(L);
+      var shopRow=el("div","bps-shoprow"); d.appendChild(shopRow); fillShop(shopRow, x);
+      var S=D.sources||{}, srcs=el("p","bps-cite"); srcs.appendChild(document.createTextNode("Sources: "));
+      (x.src||[]).forEach(function(k,i){
+        var s0=S[k]; if(!s0) return; if(i) srcs.appendChild(document.createTextNode(" · "));
+        var u = (k==="ff" && x.ff) ? x.ff : (k==="tf" && x.tf) ? x.tf : s0.u, label = s0.t.split(",")[0].replace(/ \(.*$/,"");
+        if(u){ var a2=el("a",null,label); a2.href=u; a2.target="_blank"; a2.rel="noopener"; srcs.appendChild(a2); }
+        else srcs.appendChild(document.createTextNode(label));
+      });
+      d.appendChild(srcs);
+      det.appendChild(d);
+    }
+    function spark(c){
+      var ns="http://www.w3.org/2000/svg", W=300,H=110,L=4,R=296,Tp=8,B=88;
+      var s=document.createElementNS(ns,"svg"); s.setAttribute("viewBox","0 0 "+W+" "+H); s.setAttribute("role","img");
+      s.setAttribute("aria-label","Monthly temperature and rainfall");
+      var vals=c.hi.concat(c.lo).concat(c.p90m), mn=Math.min.apply(null,vals)-2, mx=Math.max.apply(null,vals)+2;
+      var X=function(i){return L+(i+.5)*(R-L)/12;}, Y=function(v){return B-(v-mn)/(mx-mn)*(B-Tp);};
+      var pmax=Math.max(120,Math.max.apply(null,c.pr));
+      function n(t,a){var e=document.createElementNS(ns,t); for(var k in a) e.setAttribute(k,a[k]); s.appendChild(e); return e;}
+      c.pr.forEach(function(p,i){ var h=p/pmax*40; n("rect",{x:X(i)-7,y:B-h,width:14,height:h,rx:2,fill:col("--bps-moist"),"fill-opacity":".22"}); });
+      function line(a,color,w,dash){ n("path",{d:a.map(function(v,i){return (i?"L":"M")+X(i).toFixed(1)+","+Y(v).toFixed(1);}).join(""),fill:"none",stroke:color,"stroke-width":w,"stroke-dasharray":dash||"none","stroke-linecap":"round"}); }
+      line(c.p90m,col("--bps-drained"),1.4,"3 3"); line(c.hi,col("--bps-fg"),2); line(c.lo,col("--bps-mut"),1.6);
+      "JFMAMJJASOND".split("").forEach(function(m,i){ var t=n("text",{x:X(i),y:H-6,"text-anchor":"middle","font-size":"9.5",fill:col("--bps-mut")}); t.textContent=m; });
+      var wrap=el("div","bps-spark"); wrap.appendChild(s);
+      var lg=el("div","bps-leg");
+      [["--bps-fg","Avg high"],["--bps-mut","Avg low"],["--bps-drained","Hot days (p90)"],["--bps-moist","Rain"]].forEach(function(p){
+        var sp=el("span"); var i=el("i"); i.style.background=col(p[0]); sp.appendChild(i); sp.appendChild(document.createTextNode(p[1])); lg.appendChild(sp); });
+      wrap.appendChild(lg); return wrap;
+    }
+
+    // ---- shop: read the store's own product list (same site), match by species name, show stock
+    var shopP=null;
+    function loadShop(){
+      if(shopP) return shopP;
+      try{ var c=sessionStorage.getItem("bps-shop"); if(c){ var o=JSON.parse(c); if(Date.now()-o.t<600000) return shopP=Promise.resolve(o.items); } }catch(e){}
+      var all=[], url=SHOP_URL+"?format=json", pages=0;
+      function next(u){
+        return fetch(u,{credentials:"same-origin"}).then(function(r){ if(!r.ok) throw 0; return r.json(); }).then(function(j){
+          (j.items||[]).forEach(function(it){
+            var v=(it.structuredContent&&it.structuredContent.variants)||it.variants||[];
+            var stock=v.some(function(z){ return z.unlimited || (z.qtyInStock||0)>0; });
+            all.push({t:it.title||"",u:it.fullUrl||"",s:stock});
+          });
+          var p=j.pagination; pages++;
+          if(p && p.nextPage && p.nextPageUrl && pages<20) return next(p.nextPageUrl+(p.nextPageUrl.indexOf("?")>-1?"&":"?")+"format=json");
+          return all;
+        });
+      }
+      shopP=next(url).then(function(items){ try{sessionStorage.setItem("bps-shop",JSON.stringify({t:Date.now(),items:items}));}catch(e){} return items; })
+        .catch(function(){ return null; });
+      return shopP;
+    }
+    function fillShop(row, x){
+      var ep=x.name.replace(/^Drosera\s+/,"").replace(/^×\s*/,""), hyb=x.hyb;
+      var re=new RegExp("Drosera\\s+"+(hyb?"(?:x|×)\\s*":"")+ep.replace(/[.*+?^${}()|[\]\\]/g,"\\$&")+"\\b","i");
+      loadShop().then(function(items){
+        row.innerHTML="";
+        if(!items){ var f=el("a","bps-shop","Shop pygmy sundews"); f.href=SHOP_URL; f.target="_blank"; f.rel="noopener"; row.appendChild(f); return; }
+        var hits=items.filter(function(it){ return re.test(it.t); });
+        if(!hits.length) return;
+        var kind=function(t){ return /^\s*gemmae/i.test(t)?"Gemmae":/^\s*seeds?/i.test(t)?"Seeds":"Plant"; };
+        var order={Plant:0,Gemmae:1,Seeds:2};
+        hits.sort(function(a,b){ return order[kind(a.t)]-order[kind(b.t)] || a.t.localeCompare(b.t); });
+        row.appendChild(el("span","bps-shoplab","In the shop:"));
+        hits.forEach(function(it){
+          var a=el("a","bps-shop"+(it.s?"":" is-out")); a.href=it.u; a.target="_blank"; a.rel="noopener";
+          var form=(it.t.match(/\(([^)]+)\)/)||[])[1];
+          a.textContent=kind(it.t)+(form?" ("+form+")":"")+(it.s?"":" · sold out");
+          row.appendChild(a);
+        });
+      });
+    }
+
+    // ---- plot
+    function drawPlot(){
+      plot.innerHTML="";
+      var ns="http://www.w3.org/2000/svg", W=640,H=380,L=70,R=625,Tp=16,B=330;
+      var s=document.createElementNS(ns,"svg"); s.setAttribute("viewBox","0 0 "+W+" "+H);
+      function n(t,a,txt){var e=document.createElementNS(ns,t); for(var k in a) e.setAttribute(k,a[k]); if(txt!=null) e.textContent=txt; s.appendChild(e); return e;}
+      var have=T.filter(function(x){return x.clim;}), lo=24, hi=44;
+      var X=function(v){return L+(v-lo)/(hi-lo)*(R-L);}, Y=function(lvl){return B-(lvl-.5)/4*(B-Tp);};
+      BANDS.forEach(function(b){ var y0=Y(b.lvl+.5), y1=Y(b.lvl-.5);
+        n("rect",{x:L,y:y0,width:R-L,height:y1-y0,fill:col(b.c),"fill-opacity":".09"});
+        n("text",{x:L-8,y:(y0+y1)/2+4,"text-anchor":"end","font-size":"12","font-weight":"600",fill:col("--bps-fg")},b.k); });
+      for(var c=26;c<=44;c+=4){ var lab=unit==="F"?Math.round(c*9/5+32)+"°":c+"°";
+        n("line",{x1:X(c),x2:X(c),y1:Tp,y2:B,stroke:col("--bps-line")}); n("text",{x:X(c),y:B+16,"text-anchor":"middle","font-size":"11",fill:col("--bps-mut")},lab); }
+      n("text",{x:(L+R)/2,y:B+38,"text-anchor":"middle","font-size":"12",fill:col("--bps-mut")},"Typical hot extreme, hottest month  →  hotter summers");
+      var v=norm(q.value);
+      have.forEach(function(x){
+        var b=bandOf(x.band), h=0; for(var i=0;i<x.id.length;i++) h=(h*31+x.id.charCodeAt(i))>>>0;
+        var jy=((h%1000)/1000-.5)*0.62, cx=X(x.clim.p90), cy=Y(b.lvl+jy);
+        var match=!v || norm(short(x)).indexOf(v)>-1 || (x.alias||[]).some(function(a){return norm(a).indexOf(v)>-1;});
+        var isSel=x.id===sel;
+        var dot=n("circle",{cx:cx,cy:cy,r:isSel?7.5:5.5,fill:col(b.c),stroke:isSel?col("--bps-fg"):col("--bps-card"),"stroke-width":isSel?2.4:1.2,
+          opacity:match?1:.18,style:"cursor:pointer"});
+        var tt=document.createElementNS(ns,"title"); tt.textContent=x.name+" · "+x.band+" · ≈"+deg(x.clim.p90); dot.appendChild(tt);
+        dot.addEventListener("click",function(){select(x.id,true);});
+        if(isSel || (v && match)) n("text",{x:cx+9,y:cy+4,"font-size":"12","font-style":"italic","font-weight":"600",fill:col("--bps-fg")},short(x));
+      });
+      plot.appendChild(s);
+      var miss=T.filter(function(x){return !x.clim;}).map(short);
+      plot.appendChild(el("p","bps-np","Not plotted (no climate-map data): "+miss.join(", ")+"."));
+    }
+
+    det.appendChild((function(){ var e=el("div","bps-empty"); e.appendChild(el("b",null,"Pick a species"));
+      e.appendChild(document.createTextNode("Search above or tap any name to see its habitat, soil and summer heat.")); return e; })());
+  }
+
+  function track(evt, label){ try{ if(window.gtag) window.gtag("event", evt, {species: label}); }catch(e){} }
+
+  function init(){ document.querySelectorAll("#bps-root").forEach(boot); }
+  if(document.readyState==="loading") document.addEventListener("DOMContentLoaded",init); else init();
+  // Squarespace may swap page content without a full reload; re-init when the widget appears.
+  try{ new MutationObserver(function(){ var r=document.getElementById("bps-root"); if(r && !r.getAttribute("data-bps-ready")) boot(r); })
+    .observe(document.body,{childList:true,subtree:true}); }catch(e){}
+})();
+</script>

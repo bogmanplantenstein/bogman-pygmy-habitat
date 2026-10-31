@@ -1,0 +1,17 @@
+Copyright (c) 2026 Bogman Plantenstein LLC. All rights reserved.
+
+This repository and its contents — including the source code, compiled scripts, the
+compiled dataset (public/pygmy-data.json), written descriptions, photographs, and the
+selection and arrangement of the data — are proprietary.
+
+No license is granted. You may not copy, reproduce, modify, distribute, publish, scrape,
+mirror, sublicense, or create derivative works from any part of this repository, or use
+it to train or build other datasets or software, without prior written permission from
+Bogman Plantenstein LLC.
+
+Third-party sources (scientific literature, the ICPS guide, Fierce Flora, Bureau of
+Meteorology climate data, NASA POWER data, iNaturalist observations) remain the property
+of their respective owners and are credited in ATTRIBUTION.md. Nothing here claims
+ownership of those works.
+
+Contact: bogman@bogmanplantenstein.com
