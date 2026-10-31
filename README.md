@@ -25,6 +25,22 @@ Photos come from two places, read live in the visitor's browser. Nothing is copi
 - **Cultivated:** the Bogman Gallery (`gallery.json` on R2, the same file the /species page uses). Publish photos to the gallery as usual and they appear here. Forms show as chips. Cultivated crosses are left out.
 - **In the wild:** iNaturalist photos from the research-grade observations the climate map already uses (observation ids are in the dataset; photo URLs and credits load from the iNaturalist API). Only CC0, CC BY and CC BY-SA photos are shown, credited to each photographer. `INAT_LIC` in `src/widget.html` controls this.
 
+## Flower data (colour and size)
+
+`public/flowers.csv` holds flower colour, flowering months and published sizes. Edit it right on GitHub (open the file → pencil icon → commit). Cloudflare redeploys in a minute or two; no build step.
+
+| column | what to put |
+|---|---|
+| `colors` | any of `white`, `pink`, `red`, `orange`, `yellow`, separated by `;` (e.g. `pink;white;orange`) |
+| `color_note` | short description shown in the panel, e.g. `metallic orange, black centre` |
+| `months` | flowering months in habitat, e.g. `Oct-Nov` |
+| `petal_mm` | published petal length in mm: `7-12`, `3`, or `-6` for "6 mm or less" |
+| `diameter_mm` | published flower width in mm, only if no petal length |
+| `size_note` | e.g. `approx.` |
+| `source` | where the numbers came from, e.g. `Lowrie 2014, Magnum Opus vol. 2` |
+
+Size classes come from petal length (small < 4 mm, medium 4–7, large > 7), or from flower width when that's all there is (small < 10 mm, medium 10–16, large > 16). Species with no number are left out of the size filter. Thresholds are in `loadFlowers()` in `src/widget.html`.
+
 ## Changing the data or the widget
 
 The text, moisture scores and dormancy flags live in `build/widget_data.py` and `build/widget_patch.py`. The widget lives in `src/widget.html`. To rebuild, with a clone of `bogman-climate-map` next to this repo:

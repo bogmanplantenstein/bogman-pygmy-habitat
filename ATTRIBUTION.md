@@ -14,6 +14,11 @@ Habitat descriptions in this dataset are paraphrased summaries written for Bogma
 ## Map
 - Beck, H.E. et al. (2023). High-resolution (1 km) Köppen-Geiger maps for 1901–2099 based on constrained CMIP6 projections. *Scientific Data* 10: 724. https://doi.org/10.1038/s41597-023-02549-6 (CC BY 4.0). 1991–2020 map, recoloured and cropped.
 
+## Flowers
+- Western Australian Herbarium. *FloraBase* descriptive catalogue (flower colour, flowering months).
+- Ng, B. *Fierce Flora* species profiles (flower colour notes, approximate flower width).
+- Robinson et al. (2018), Phytotaxa 346 (petal lengths: albonotata, and key values for hyperostigma, sewelliae, pulchella); Lowrie, A. (2002) Nuytsia 15: 59–62 (pedicellaris).
+
 ## Photos
 - Cultivated plants: Bogman Plantenstein (Bogman Gallery).
 - Wild plants: iNaturalist photographers, credited on each photo; CC0, CC BY and CC BY-SA licences only. Loaded live from iNaturalist, not stored here.

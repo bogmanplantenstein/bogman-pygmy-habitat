@@ -1,15 +1,16 @@
-# Cloudflare Pages response headers.
+# Cloudflare response headers.
 # Only the Bogman site may read the data files from a browser. (Determined people can still download them.)
 /pygmy-data.json
   Access-Control-Allow-Origin: https://www.burymeinthebog.com
   Cache-Control: public, max-age=3600
   X-Robots-Tag: noindex
 
-/photos/manifest.json
+/flowers.csv
   Access-Control-Allow-Origin: https://www.burymeinthebog.com
-  Cache-Control: public, max-age=3600
+  Cache-Control: public, max-age=600
+  X-Robots-Tag: noindex
 
-/photos/*
+/map/*
   Cache-Control: public, max-age=604800
 
 /widget.js

@@ -24,7 +24,9 @@
           <button type="button" role="tab" data-view="plot" aria-selected="false">Moisture × heat</button>
         </div>
         <div class="bps-filter" id="bps-filter" hidden></div>
+        <button type="button" class="bps-reset" id="bps-reset" hidden>All species <span aria-hidden="true">×</span></button>
       </div>
+      <div class="bps-flowers" id="bps-flowers" hidden></div>
       <div class="bps-shelf" id="bps-shelf"></div>
       <div class="bps-plot" id="bps-plot" hidden></div>
     </div>
@@ -41,6 +43,7 @@
       <li>Rainfall, monthly highs and lows: <a href="http://www.bom.gov.au/climate/averages/" target="_blank" rel="noopener">Australian Bureau of Meteorology</a> long-term averages from 27 stations, weighted to each species' records.</li>
       <li>Dry months: months where average rainfall (mm) is less than twice the average temperature (°C), the standard Bagnouls–Gaussen test. 5–6 dry months is a dry summer; 7 or more is a long, dry summer.</li>
       <li>Climate uses research-grade records only, inside the species' native range.</li>
+      <li>Flowers: colour and flowering months from <a href="https://florabase.dbca.wa.gov.au/" target="_blank" rel="noopener">FloraBase</a> (WA Herbarium descriptive catalogue) and Fierce Flora; petal lengths from published species descriptions where available. Size classes use petal length (small under 4 mm, medium 4–7 mm, large over 7 mm) or, where only a flower width is published, small under 10 mm, medium 10–16 mm, large over 16 mm. Species without a published measurement are left out of the size filter.</li>
       <li>Photos: cultivated plants from the <a href="https://www.burymeinthebog.com/species" target="_blank" rel="noopener">Bogman Gallery</a>. Wild photos load from iNaturalist, credited to each photographer; only openly licensed photos (CC0, CC BY, CC BY-SA) are shown.</li>
     </ul>
   </details>
@@ -102,6 +105,22 @@
 .bps-bar{display:flex;flex-wrap:wrap;gap:8px 12px;align-items:center;margin-bottom:10px}
 .bps-filter{display:inline-flex;align-items:center;gap:8px;font-size:13px;color:var(--bps-fg);background:rgba(233,185,73,.12);border:1px solid rgba(233,185,73,.4);border-radius:999px;padding:4px 6px 4px 12px}
 .bps-filter button{border:0;background:var(--bps-acc);color:var(--bps-ink);border-radius:999px;padding:2px 9px;font-size:12px;font-weight:700}
+.bps-reset{border:1px solid var(--bps-line);background:var(--bps-fg);color:var(--bps-ink);border-radius:999px;padding:5px 12px;font-size:12.5px;font-weight:700;display:inline-flex;gap:6px;align-items:center}
+.bps-reset span{font-size:15px;line-height:1}
+.bps-flowers{display:flex;flex-wrap:wrap;gap:6px 14px;align-items:center;margin:0 0 12px;font-size:12.5px;color:var(--bps-mut)}
+.bps-fgrp{display:flex;flex-wrap:wrap;gap:5px;align-items:center}
+.bps-fgrp > span{font-size:10.5px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;margin-right:2px}
+.bps-fgrp button{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--bps-line);background:var(--bps-card);color:var(--bps-fg);border-radius:999px;padding:3px 10px 3px 7px;font-size:12.5px;font-weight:600}
+.bps-fgrp button small{color:var(--bps-mut);font-weight:600;font-size:11px}
+.bps-fgrp button:hover{border-color:var(--bps-acc)}
+.bps-fgrp button[aria-pressed="true"]{background:var(--bps-acc);color:var(--bps-ink);border-color:var(--bps-acc)}
+.bps-fgrp button[aria-pressed="true"] small{color:var(--bps-ink)}
+.bps-fgrp button:disabled{opacity:.35;cursor:default}
+.bps-fdot{width:12px;height:12px;border-radius:50%;flex:none;box-shadow:inset 0 0 0 1px rgba(0,0,0,.3)}
+.bps-fsz{display:inline-block;border-radius:50%;background:var(--bps-mut);flex:none}
+.bps-fl{display:inline-flex;flex-wrap:wrap;gap:4px 8px;align-items:center}
+.bps-fl i{display:inline-flex;align-items:center;gap:4px;font-style:normal}
+.bps-fl em{font-style:normal;color:var(--bps-mut);font-size:12.5px}
 /* shelf */
 .bps-shelf{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
 .bps-col{background:var(--bps-card);background:linear-gradient(180deg,color-mix(in srgb,var(--b) 14%,transparent),transparent 96px),var(--bps-card);
@@ -134,8 +153,12 @@
 .bps-empty{color:var(--bps-mut);font-size:14px;text-align:center;padding:10px 6px}
 .bps-empty svg{width:120px;height:120px;display:block;margin:4px auto 10px}
 .bps-empty b{display:block;color:var(--bps-fg);font-size:17px;margin-bottom:4px;font-family:var(--bps-serif);font-style:italic}
+.bps-dtools{position:absolute;right:10px;top:10px;display:flex;gap:6px;z-index:2}
+.bps-dtools button{border:0;background:var(--bps-el);border-radius:999px;height:32px;min-width:32px;padding:0 10px;font-size:12.5px;font-weight:700;color:var(--bps-fg);display:inline-flex;align-items:center;gap:6px}
+.bps-dtools button:hover{background:var(--bps-line)}
+.bps-dtools svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 .bps-close{display:none;position:absolute;right:10px;top:10px;border:0;background:var(--bps-el);border-radius:50%;width:32px;height:32px;font-size:20px;line-height:1;color:var(--bps-fg);padding:0;z-index:2}
-.bps .bps-d-name{font-family:var(--bps-serif);font-style:italic;font-size:25px;font-weight:600;margin:0 34px 2px 0;line-height:1.15;color:var(--bps-fg);letter-spacing:-.005em;text-transform:none}
+.bps .bps-d-name{font-family:var(--bps-serif);font-style:italic;font-size:25px;font-weight:600;margin:0 120px 2px 0;line-height:1.15;color:var(--bps-fg);letter-spacing:-.005em;text-transform:none}
 .bps-d-par{color:var(--bps-mut);font-size:13px;margin:4px 0 12px;display:flex;flex-wrap:wrap;gap:6px;align-items:center}
 .bps-tag{display:inline-flex;align-items:center;gap:5px;font-size:11.5px;font-weight:700;letter-spacing:.03em;color:var(--b);
   background:color-mix(in srgb,var(--b) 14%,transparent);border:1px solid color-mix(in srgb,var(--b) 38%,transparent);border-radius:999px;padding:1px 9px}
@@ -165,6 +188,25 @@
 .bps-cap a:hover{text-decoration:underline}
 .bps-pv-msg{font-size:12.5px;color:var(--bps-mut);background:var(--bps-el);border-radius:10px;padding:14px;text-align:center;margin:0}
 .bps-pv-msg a{color:var(--bps-acc)}
+/* expanded (wide) layout */
+.bps.is-wide .bps-body{grid-template-columns:minmax(0,1fr)}
+.bps.is-wide .bps-detail{order:-1;position:relative;top:0;max-height:none;overflow:visible;padding:22px}
+.bps.is-wide .bps-d{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(300px,1fr);gap:8px 26px;align-items:start}
+.bps.is-wide .bps-dhead{grid-column:1 / -1}
+.bps.is-wide .bps-d-name{font-size:32px}
+.bps.is-wide .bps-pv{margin:0}
+.bps-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px}
+.bps-grid button{aspect-ratio:1;border:0;padding:0;border-radius:10px;background:var(--bps-el) center/cover;cursor:zoom-in;transition:transform .15s,box-shadow .15s}
+.bps-grid button:hover{transform:scale(1.02);box-shadow:0 0 0 2px var(--bps-acc)}
+.bps-grid-more{grid-column:1 / -1;justify-self:center;border:1px solid var(--bps-line);background:var(--bps-el);color:var(--bps-fg);border-radius:999px;padding:6px 14px;font-size:12.5px;font-weight:700}
+/* chart tooltip */
+.bps-spark{position:relative}
+.bps-spark .bps-hit{fill:transparent;cursor:crosshair}
+.bps-tip{position:absolute;top:6px;transform:translateX(-50%);background:rgba(23,21,14,.95);border:1px solid var(--bps-line);border-radius:9px;padding:7px 9px;font-size:11.5px;line-height:1.45;
+  color:var(--bps-fg);pointer-events:none;white-space:nowrap;box-shadow:0 6px 18px rgba(0,0,0,.4);z-index:3}
+.bps-tip b{display:block;font-size:12px;margin-bottom:2px}
+.bps-tip i{display:inline-block;width:8px;height:8px;border-radius:2px;margin-right:6px;vertical-align:0}
+.bps-tip em{font-style:normal;color:var(--bps-ink);background:var(--bps-dry);border-radius:4px;padding:0 5px;font-size:10.5px;font-weight:700;margin-left:6px}
 /* meters */
 .bps-meters{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:0 0 10px}
 .bps-m{border-radius:10px;padding:10px 11px;background:var(--bps-el);border:1px solid var(--bps-line)}
@@ -224,6 +266,7 @@ details.bps-seo a{color:#e9b949}
 .bps-lb .bps-lbx{top:10px;right:10px}.bps-lb .bps-lbp{left:12px;top:50%}.bps-lb .bps-lbn{right:12px;top:50%}
 .bps-lb p{margin:10px 0 0;font-size:13px;color:#b2a789;text-align:center}
 .bps-lb p a{color:#e9b949}
+@media (max-width:1040px){ .bps.is-wide .bps-d{grid-template-columns:minmax(0,1fr)} }
 @media (max-width:1040px){ .bps-hero{grid-template-columns:1fr} .bps-mapside{display:grid;grid-template-columns:1fr 1fr;gap:10px} }
 @media (max-width:860px){
   .bps-body{grid-template-columns:1fr}
@@ -236,6 +279,10 @@ details.bps-seo a{color:#e9b949}
     box-shadow:inset 0 3px 0 var(--b),0 -10px 40px rgba(0,0,0,.5),0 0 0 100vmax rgba(0,0,0,.55)}
   .bps-detail .bps-empty{display:none}
   .bps-close{display:block}
+  .bps-dtools{right:52px}
+  .bps.is-wide .bps-detail{position:fixed;order:0;top:0;max-height:none;height:100%;overflow-y:auto;border-radius:0;padding-top:24px}
+  .bps.is-wide .bps-detail::before{display:none}
+  .bps-grid{grid-template-columns:repeat(3,1fr);gap:5px}
 }
 @media (max-width:560px){
   .bps{padding:12px;border-radius:14px}
@@ -279,10 +326,12 @@ details.bps-seo a{color:#e9b949}
   }
 
   function start(root, D){
-    var T = D.taxa, M = D.map, sel = null, view = "shelf", cellSel = null, GAL = {}, INAT = {};
+    var T = D.taxa, M = D.map, sel = null, view = "shelf", cellSel = null, GAL = {}, INAT = {}, FL = {}, fColor = null, fSize = null;
+    var COLORS = [["white","White","#f4efe2"],["pink","Pink","#e98fb2"],["red","Red","#cf4a3c"],["orange","Orange","#ef8a35"],["yellow","Yellow","#ecd25b"]];
+    var SIZES = [["S","Small",6],["M","Medium",9],["L","Large",12]];
     var unit = pickUnit();
     var $ = function(s){return root.querySelector(s);};
-    var shelf=$("#bps-shelf"), plot=$("#bps-plot"), det=$("#bps-detail"), q=$("#bps-q"), mapEl=$("#bps-map"), side=$("#bps-mapside"), filt=$("#bps-filter");
+    var shelf=$("#bps-shelf"), plot=$("#bps-plot"), det=$("#bps-detail"), q=$("#bps-q"), mapEl=$("#bps-map"), side=$("#bps-mapside"), filt=$("#bps-filter"), resetB=$("#bps-reset"), flowEl=$("#bps-flowers");
     var css = getComputedStyle(root);
     var col = function(v){return css.getPropertyValue(v).trim();};
     var bandOf = function(k){for(var i=0;i<BANDS.length;i++) if(BANDS[i].k===k) return BANDS[i];};
@@ -312,6 +361,60 @@ details.bps-seo a{color:#e9b949}
       return keys.some(function(k){return norm(k).indexOf(v)>-1;});
     }
     function find(id){ for(var i=0;i<T.length;i++) if(T[i].id===id) return T[i]; }
+    function fOk(x){ var f=FL[x.id]; if(fColor && !(f && f.colors.indexOf(fColor)>-1)) return false; if(fSize && !(f && f.size===fSize)) return false; return true; }
+    function visible(x, v){ return matchQ(x, v===undefined ? norm(q.value) : v) && fOk(x); }
+
+    // ---- flowers (public/flowers.csv; edit that file to add data)
+    function parseCSV(t){
+      var rows=[], row=[], f="", qt=false;
+      for(var i=0;i<t.length;i++){ var c=t[i];
+        if(qt){ if(c==='"'){ if(t[i+1]==='"'){ f+='"'; i++; } else qt=false; } else f+=c; }
+        else if(c==='"') qt=true; else if(c===","){ row.push(f); f=""; }
+        else if(c==="\n"||c==="\r"){ if(c==="\r"&&t[i+1]==="\n") i++; row.push(f); f=""; if(row.length>1||row[0]) rows.push(row); row=[]; }
+        else f+=c; }
+      if(f||row.length){ row.push(f); rows.push(row); }
+      var h=rows.shift()||[]; return rows.map(function(r){ var o={}; h.forEach(function(k,j){ o[k.trim()]=(r[j]||"").trim(); }); return o; });
+    }
+    function rng(s){ if(!s) return null; var m=s.replace(/[–—]/g,"-").match(/^\s*([\d.]*)\s*-?\s*([\d.]*)\s*$/); if(!m) return null;
+      var a=parseFloat(m[1]), b=parseFloat(m[2]); if(isNaN(a)&&isNaN(b)) return null; if(isNaN(a)) a=b; if(isNaN(b)) b=a; return [a,b]; }
+    function loadFlowers(){
+      return fetch(BASE+"flowers.csv").then(function(r){ if(!r.ok) throw 0; return r.text(); }).then(function(t){
+        parseCSV(t).forEach(function(o){ if(!o.id) return;
+          var pe=rng(o.petal_mm), di=rng(o.diameter_mm), size=null, mid;
+          if(pe){ mid=(pe[0]+pe[1])/2; size = mid<4?"S":mid<=7?"M":"L"; }
+          else if(di){ mid=(di[0]+di[1])/2; size = mid<10?"S":mid<=16?"M":"L"; }
+          FL[o.id]={colors:(o.colors||"").toLowerCase().split(/[;,\/]/).map(function(c){return c.trim();}).filter(Boolean), note:o.color_note, months:o.months, petal:pe, petalRaw:o.petal_mm, diam:di, sizeNote:o.size_note, src:o.source, size:size};
+        });
+        buildFlowerRow(); applyDim(); drawMap(); if(sel) renderDetail(find(sel), true);
+      }).catch(function(){});
+    }
+    function buildFlowerRow(){
+      flowEl.innerHTML=""; var any=false;
+      function grp(label, items, cur, set){
+        var g=el("div","bps-fgrp"); g.appendChild(el("span",null,label));
+        items.forEach(function(it){
+          var n=T.filter(function(x){ var f=FL[x.id]; return f && (label==="Size" ? f.size===it[0] : f.colors.indexOf(it[0])>-1); }).length;
+          if(!n && label==="Size") return; any=any||n>0;
+          var b=el("button"); b.type="button"; b.setAttribute("aria-pressed",String(cur===it[0])); b.disabled=!n;
+          if(label==="Size"){ var d0=el("i","bps-fsz"); d0.style.width=d0.style.height=it[2]+"px"; b.appendChild(d0); }
+          else { var d=el("i","bps-fdot"); d.style.background=it[2]; b.appendChild(d); }
+          b.appendChild(document.createTextNode(it[1])); b.appendChild(el("small",null,String(n)));
+          b.addEventListener("click",function(){ set(cur===it[0]?null:it[0]); buildFlowerRow(); refresh(); track("flower_filter", label+":"+it[0]); });
+          g.appendChild(b);
+        });
+        if(g.children.length>1) flowEl.appendChild(g);
+      }
+      grp("Flower", COLORS, fColor, function(v){ fColor=v; });
+      grp("Size", SIZES, fSize, function(v){ fSize=v; });
+      flowEl.hidden=!any;
+    }
+    function refresh(){ applyDim(); drawMap(); if(view==="plot") drawPlot(); updateReset(); }
+    function updateReset(){ resetB.hidden = !(sel || cellSel || fColor || fSize || q.value); }
+    function clearAll(){
+      q.value=""; fColor=fSize=null; cellSel=null; filt.hidden=true; root.classList.remove("is-wide");
+      if(sel){ setSel(null); emptyDetail(); det.classList.remove("is-open"); }
+      buildFlowerRow(); refresh();
+    }
 
     // ---- shelf
     var chips = {};
@@ -327,14 +430,15 @@ details.bps-seo a{color:#e9b949}
         var ch=el("button","bps-chip"+(x.hyb?" is-hyb":"")); ch.type="button";
         ch.appendChild(el("span","bps-av")); ch.appendChild(document.createTextNode(short(x)));
         ch.setAttribute("aria-label", x.name+", "+x.band+" soil");
-        ch.addEventListener("click",function(){ select(x.id); });
+        ch.addEventListener("click",function(){ if(sel===x.id) deselect(); else select(x.id); });
         chips[x.id]=ch; wrap.appendChild(ch);
       });
       c.appendChild(wrap); shelf.appendChild(c);
     });
     function applyDim(){
       var v=norm(q.value);
-      T.forEach(function(x){ if(chips[x.id]) chips[x.id].classList.toggle("is-dim", !matchQ(x,v) || !!(cellSel && cellSel.ids.indexOf(x.id)<0)); });
+      T.forEach(function(x){ if(chips[x.id]) chips[x.id].classList.toggle("is-dim", !visible(x,v) || !!(cellSel && cellSel.ids.indexOf(x.id)<0)); });
+      updateReset();
     }
 
     // ---- search
@@ -370,9 +474,10 @@ details.bps-seo a{color:#e9b949}
       if(cellSel && cellSel.ids.indexOf(id)<0) clearCell();
       setSel(id); renderDetail(find(id)); det.classList.add("is-open");
       drawMap(); if(view==="plot") drawPlot();
-      track("species_view", id);
+      updateReset(); track("species_view", id);
     }
-    function deselect(){ setSel(null); emptyDetail(); det.classList.remove("is-open"); drawMap(); if(view==="plot") drawPlot(); }
+    function deselect(){ setSel(null); root.classList.remove("is-wide"); emptyDetail(); det.classList.remove("is-open"); drawMap(); if(view==="plot") drawPlot(); updateReset(); }
+    resetB.addEventListener("click", clearAll);
 
     // ================= MAP =================
     var mapSvg=null, PX=M ? M.h/(M.ext[2]-M.ext[3]) : 1;
@@ -394,7 +499,9 @@ details.bps-seo a{color:#e9b949}
       mapSvg=sv(mapEl,"svg",{viewBox:"0 0 "+M.w+" "+M.h,role:"img","aria-label":"Pygmy sundew records on a 25 km grid"});
       var defs=sv(mapSvg,"defs",{}), f=sv(defs,"filter",{id:"bps-mglow",x:"-1",y:"-1",width:"3",height:"3"});
       sv(f,"feGaussianBlur",{stdDeviation:"4",result:"b"}); var fm=sv(f,"feMerge",{}); sv(fm,"feMergeNode",{"in":"b"}); sv(fm,"feMergeNode",{"in":"SourceGraphic"});
+      sv(mapSvg,"rect",{x:0,y:0,width:M.w,height:M.h,fill:"transparent","class":"bps-mapbg"});
       sv(mapSvg,"g",{"class":"bps-cells"});
+      mapSvg.addEventListener("click",function(e){ if(e.target.getAttribute && /bps-cell/.test(e.target.getAttribute("class")||"")) return; if(sel||cellSel){ if(sel) deselect(); if(cellSel) clearCell(); } });
       var tg=sv(mapSvg,"g",{});
       M.towns.forEach(function(t){
         var x=lng2x(t[2]), y=lat2y(t[1]), left=t[0]==="Esperance"||t[0]==="Kalgoorlie";
@@ -424,7 +531,7 @@ details.bps-seo a{color:#e9b949}
         });
       } else {
         Object.keys(CELLS).forEach(function(k){
-          var ids=CELLS[k].filter(function(id){return matchQ(find(id),v);}); if(!ids.length) return;
+          var ids=CELLS[k].filter(function(id){return visible(find(id),v);}); if(!ids.length) return;
           var p=k.split(","), n=ids.length, on=!!(cellSel && cellSel.k===k);
           var r=sv(g,"circle",{cx:cx2px(+p[0])+w/2,cy:cy2px(+p[1])+h/2,r:Math.min(w*.62,4+4.2*Math.sqrt(n)),
             fill:n>=8?"#e9b949":n>=4?"#e7cf8a":"#f1ead7","fill-opacity":on?1:.9,stroke:on?"#fff":"#17150e","stroke-width":on?3:1.5,"class":"bps-cell"});
@@ -439,12 +546,12 @@ details.bps-seo a{color:#e9b949}
       var k=i+","+j;
       if(sel){ setSel(null); emptyDetail(); det.classList.remove("is-open"); }
       cellSel = (cellSel && cellSel.k===k) ? null : {k:k, ids:(CELLS[k]||[]).slice(), label:nearTown(i,j)};
-      applyDim(); drawMap(); if(view==="plot") drawPlot();
+      refresh();
       filt.hidden=!cellSel; filt.innerHTML="";
       if(cellSel){ filt.appendChild(el("span",null,cellSel.ids.length+" species · "+cellSel.label)); var b=el("button",null,"Clear"); b.type="button"; b.addEventListener("click",clearCell); filt.appendChild(b); }
       track("map_cell", k);
     }
-    function clearCell(){ cellSel=null; filt.hidden=true; applyDim(); drawMap(); if(view==="plot") drawPlot(); }
+    function clearCell(){ cellSel=null; filt.hidden=true; refresh(); }
     function drawSide(){
       side.innerHTML=""; if(!M) return;
       var now=el("div","bps-mapnow"), x=sel?find(sel):null;
@@ -501,7 +608,7 @@ details.bps-seo a{color:#e9b949}
       return INAT[x.id]=fetch(INAT_API+x.inat.join(",")).then(function(r){ if(!r.ok) throw 0; return r.json(); }).then(function(j){
         var out=[]; (j.results||[]).forEach(function(o){ (o.photos||[]).forEach(function(p){
           if(INAT_LIC.indexOf(p.license_code)<0 || !p.url) return;
-          out.push({thumb:p.url.replace("/square.","/small."), display:p.url.replace("/square.","/large."), full:p.url.replace("/square.","/original."),
+          out.push({thumb:p.url.replace("/square.","/small."), mid:p.url.replace("/square.","/medium."), display:p.url.replace("/square.","/large."), full:p.url.replace("/square.","/original."),
             attr:p.attribution, obs:"https://www.inaturalist.org/observations/"+o.id});
         }); });
         return out;
@@ -530,14 +637,14 @@ details.bps-seo a{color:#e9b949}
         var f = pv.form>=0 ? g.forms[pv.form] : (g.forms.length===1 && !g.base.length ? g.forms[0] : null);
         pv.list = (f ? f.photos : g.all).map(function(p){ return {thumb:p.thumb, display:p.display, full:p.full||p.display}; });
         pv.credit = {txt:"Photo: Bogman Plantenstein", link:GALLERY_PAGE+(f?f.slug:g.slug), linkTxt:"Open in gallery ↗"};
-        renderStage(x, host, false);
+        if(root.classList.contains("is-wide")) renderGrid(x, host, false); else renderStage(x, host, false);
       } else {
         var wait=el("p","bps-pv-msg","Loading iNaturalist photos…"); host.appendChild(wait);
         loadInat(x).then(function(list){
           if(pv.tab!=="wild" || sel!==x.id || !wait.parentNode) return;
           wait.remove();
           if(!list.length){ var m=el("p","bps-pv-msg"); m.appendChild(document.createTextNode("No openly licensed wild photos to show here. ")); var a=el("a",null,"Browse on iNaturalist ↗"); a.href="https://www.inaturalist.org/taxa/"+x.taxon; a.target="_blank"; a.rel="noopener"; m.appendChild(a); host.appendChild(m); return; }
-          pv.list=list; pv.credit=null; renderStage(x, host, true);
+          pv.list=list; pv.credit=null; if(root.classList.contains("is-wide")) renderGrid(x, host, true); else renderStage(x, host, true);
           var more=el("p","bps-cap"); var a2=el("a",null,"More on iNaturalist ↗"); a2.href="https://www.inaturalist.org/taxa/"+x.taxon+"/browse_photos"; a2.target="_blank"; a2.rel="noopener"; more.appendChild(el("span",null,"Openly licensed photos only")); more.appendChild(a2); host.appendChild(more);
         });
       }
@@ -567,6 +674,20 @@ details.bps-seo a{color:#e9b949}
         else { cap.appendChild(el("span",null,pv.credit.txt)); var a2=el("a",null,pv.credit.linkTxt); a2.href=pv.credit.link; a2.target="_blank"; a2.rel="noopener"; cap.appendChild(a2); }
       }
       pv.show=show; show();
+    }
+    function renderGrid(x, host, wild){
+      var L=pv.list, g=el("div","bps-grid"), shown=0, STEP=48;
+      function more(){
+        L.slice(shown, shown+STEP).forEach(function(ph,j){ var i=shown+j, b=el("button"); b.type="button"; b.style.backgroundImage="url('"+(ph.mid||ph.display||ph.thumb)+"')";
+          b.setAttribute("aria-label","Open photo "+(i+1)); b.addEventListener("click",function(){ pv.idx=i; lightbox(x); }); g.insertBefore(b, mb); });
+        shown=Math.min(L.length, shown+STEP); mb.hidden = shown>=L.length; mb.textContent="Show more ("+(L.length-shown)+")";
+      }
+      var mb=el("button","bps-grid-more"); mb.type="button"; mb.addEventListener("click",more); g.appendChild(mb);
+      host.appendChild(g); more();
+      var cap=el("p","bps-cap"); cap.appendChild(el("span",null, wild ? L.length+" openly licensed photos · tap one for photographer credit" : L.length+" photos · Bogman Plantenstein"));
+      if(!wild){ var a=el("a",null,pv.credit.linkTxt); a.href=pv.credit.link; a.target="_blank"; a.rel="noopener"; cap.appendChild(a); }
+      host.appendChild(cap);
+      pv.show=null;
     }
     function lightbox(x){
       var L=pv.list, wild=pv.tab==="wild"; if(!L.length) return;
@@ -598,16 +719,24 @@ details.bps-seo a{color:#e9b949}
       if(!keep){ pv.form=-1; pv.idx=0; pv.tab=null; }
       det.innerHTML="";
       var close=el("button","bps-close","×"); close.type="button"; close.setAttribute("aria-label","Close");
-      close.addEventListener("click",function(){det.classList.remove("is-open");});
+      close.addEventListener("click",function(){ root.classList.remove("is-wide"); det.classList.remove("is-open"); });
       det.appendChild(close);
+      var wide=root.classList.contains("is-wide"), tools=el("div","bps-dtools"), xb=el("button"); xb.type="button";
+      xb.innerHTML = wide ? '<svg viewBox="0 0 16 16"><path d="M6 2v4H2M10 14v-4h4M2 2l4 4M14 14l-4-4"/></svg>Collapse' : '<svg viewBox="0 0 16 16"><path d="M10 2h4v4M6 14H2v-4M14 2l-5 5M2 14l5-5"/></svg>Expand';
+      xb.setAttribute("aria-label", wide ? "Collapse panel" : "Expand panel");
+      xb.addEventListener("click",function(){ root.classList.toggle("is-wide"); pv.idx=0; renderDetail(x,true); det.scrollTop=0;
+        if(window.matchMedia("(min-width:861px)").matches){ var r=det.getBoundingClientRect(); if(r.top<80 || r.top>window.innerHeight*.5) window.scrollTo({top:window.pageYOffset+r.top-100,behavior:"smooth"}); }
+        track(root.classList.contains("is-wide")?"expand":"collapse", x.id); });
+      tools.appendChild(xb); det.appendChild(tools);
       det.style.setProperty("--b","var("+bandOf(x.band).c+")");
-      var d=el("div","bps-d");
-      d.appendChild(el("h3","bps-d-name",x.name));
+      var d=el("div","bps-d"), dh=el("div","bps-dhead");
+      dh.appendChild(el("h3","bps-d-name",x.name));
       var par=el("p","bps-d-par"); par.appendChild(el("span","bps-tag",x.band+" soil"));
-      par.appendChild(document.createTextNode(x.hyb ? "Natural hybrid: "+x.parents : "South-west Western Australia")); d.appendChild(par);
+      par.appendChild(document.createTextNode(x.hyb ? "Natural hybrid: "+x.parents : "South-west Western Australia")); dh.appendChild(par); d.appendChild(dh);
       var pvh=el("div","bps-pv"); d.appendChild(pvh); photoViewer(x,pvh);
+      var info=el("div","bps-dinfo"); d.appendChild(info);
       loadGallery().then(function(){ if(sel===x.id && GAL[x.id] && pv.tab!=="cult" && !keep){ pv.tab="cult"; photoViewer(x,pvh); } });
-      var b=bandOf(x.band), meters=el("div","bps-meters");
+      var b=bandOf(x.band), meters=el("div","bps-meters"), dd0=d; d=info;
       var m1=el("div","bps-m"); m1.appendChild(el("span",null,"Soil moisture")); m1.appendChild(el("b",null,x.band));
       var g=el("div","bps-gauge"); for(var i=1;i<=4;i++){ var seg=el("i"); if(i<=b.lvl) seg.style.background=col(b.c); g.appendChild(seg);} m1.appendChild(g);
       var m2=el("div","bps-m"); m2.appendChild(el("span",null,"Typical hot extreme"));
@@ -628,6 +757,17 @@ details.bps-seo a{color:#e9b949}
       if(x.clim){ d.appendChild(spark(x.clim)); }
       var dl=el("dl");
       function row(k,v){ if(!v) return; dl.appendChild(el("dt",null,k)); var dd=el("dd"); if(typeof v==="string") dd.textContent=v; else dd.appendChild(v); dl.appendChild(dd); }
+      var fl=FL[x.id];
+      if(fl && (fl.colors.length || fl.petal || fl.diam || fl.months)){
+        var fs=el("span","bps-fl");
+        fl.colors.forEach(function(c){ var cc=COLORS.filter(function(z){return z[0]===c;})[0]; if(!cc) return; var it=el("i"), dt=el("span","bps-fdot"); dt.style.background=cc[2]; it.appendChild(dt); it.appendChild(document.createTextNode(cc[1])); fs.appendChild(it); });
+        var bits=[]; if(fl.note) bits.push(fl.note.charAt(0).toUpperCase()+fl.note.slice(1));
+        if(fl.petal) bits.push("petals "+(fl.petalRaw.charAt(0)==="-" ? "up to "+fl.petal[1] : fl.petal[0]===fl.petal[1] ? fl.petal[0] : fl.petal[0]+"–"+fl.petal[1])+" mm long");
+        if(fl.diam) bits.push((fl.sizeNote&&/approx/.test(fl.sizeNote)?"about ":"")+(fl.diam[0]===fl.diam[1]?fl.diam[0]:fl.diam[0]+"–"+fl.diam[1])+" mm across");
+        if(fl.months) bits.push("blooms "+fl.months.replace("-","–")+" in habitat");
+        if(bits.length) fs.appendChild(el("em",null,bits.join(" · ")));
+        row("Flowers", fs);
+      }
       row("Habitat", x.hab); row("Range", x.dist); row("Soil type", x.soil ? x.soil.charAt(0).toUpperCase()+x.soil.slice(1) : null);
       if(x.kz && x.kz.length){ var kz=el("span"); x.kz.forEach(function(z,i){ if(i) kz.appendChild(document.createTextNode(" · ")); kz.appendChild(el("code",null,z[0])); kz.appendChild(document.createTextNode(KG_NAME[z[0]]+(x.kz.length>1?" ("+z[1]+"%)":""))); }); row("Climate zone", kz); }
       d.appendChild(dl);
@@ -645,7 +785,7 @@ details.bps-seo a{color:#e9b949}
         else srcs.appendChild(document.createTextNode(label));
       });
       d.appendChild(srcs);
-      det.appendChild(d);
+      det.appendChild(dd0);
       if(!keep) det.scrollTop=0;
     }
     function niceStep(range, n){ var raw=Math.max(range,1e-6)/n, p=Math.pow(10,Math.floor(Math.log10(raw))), m=raw/p; return (m<1.5?1:m<3?2:m<7?5:10)*p; }
@@ -673,10 +813,31 @@ details.bps-seo a{color:#e9b949}
       sv(s,"path",{d:area,fill:"url(#"+gid+")"});
       function line(a,color,w,dash){ sv(s,"path",{d:a.map(function(v,i){return (i?"L":"M")+pt(a,i);}).join(""),fill:"none",stroke:color,"stroke-width":w,"stroke-dasharray":dash||"none","stroke-linecap":"round","stroke-linejoin":"round"}); }
       line(c.lo,col("--bps-cool"),1.8); line(c.hi,col("--bps-hot"),2.2); line(c.p90m,col("--bps-p90"),1.4,"3 3");
-      var hm=c.hi.indexOf(Math.max.apply(null,c.hi)); sv(s,"circle",{cx:X(hm),cy:Y(c.hi[hm]),r:3.2,fill:col("--bps-hot"),stroke:col("--bps-el"),"stroke-width":1.5});
+      c.hi.forEach(function(v,i){ sv(s,"circle",{cx:X(i),cy:Y(v),r:2.3,fill:col("--bps-hot")}); });
+      c.lo.forEach(function(v,i){ sv(s,"circle",{cx:X(i),cy:Y(v),r:2,fill:col("--bps-cool")}); });
+      var guide=sv(s,"line",{x1:0,x2:0,y1:Tp,y2:B,stroke:col("--bps-fg"),"stroke-opacity":".35","stroke-dasharray":"2 3",visibility:"hidden"});
+      var hl=[sv(s,"circle",{r:4.2,fill:col("--bps-hot"),stroke:"#fff","stroke-width":1.5,visibility:"hidden"}),
+              sv(s,"circle",{r:4,fill:col("--bps-cool"),stroke:"#fff","stroke-width":1.5,visibility:"hidden"}),
+              sv(s,"circle",{r:3.6,fill:col("--bps-p90"),stroke:"#fff","stroke-width":1.2,visibility:"hidden"})];
+      var MN=["January","February","March","April","May","June","July","August","September","October","November","December"];
+      var tip=el("div","bps-tip"); tip.hidden=true; var cur=-1;
+      function showM(i){
+        cur=i; var x0=X(i); guide.setAttribute("x1",x0); guide.setAttribute("x2",x0); guide.setAttribute("visibility","visible");
+        [[c.hi,0],[c.lo,1],[c.p90m,2]].forEach(function(p){ hl[p[1]].setAttribute("cx",x0); hl[p[1]].setAttribute("cy",Y(p[0][i])); hl[p[1]].setAttribute("visibility","visible"); });
+        var dry=c.pr[i] < (c.hi[i]+c.lo[i]), rain=rIn ? (c.pr[i]/25.4).toFixed(1)+" in" : Math.round(c.pr[i])+" mm";
+        tip.innerHTML=""; var hd=el("b",null,MN[i]); if(dry) hd.appendChild(el("em",null,"dry")); tip.appendChild(hd);
+        [["--bps-hot","Avg high",deg(c.hi[i])],["--bps-cool","Avg low",deg(c.lo[i])],["--bps-p90","Hot days (p90)",deg(c.p90m[i])],["--bps-rain","Rain",rain]].forEach(function(r){
+          var ln=el("div"), sw=el("i"); sw.style.background=col(r[0]); ln.appendChild(sw); ln.appendChild(document.createTextNode(r[1]+": "+r[2])); tip.appendChild(ln); });
+        tip.hidden=false; var pct=x0/W*100; tip.style.left=Math.max(22,Math.min(78,pct))+"%";
+      }
+      function hideM(){ cur=-1; tip.hidden=true; guide.setAttribute("visibility","hidden"); hl.forEach(function(h){h.setAttribute("visibility","hidden");}); }
+      for(var mi2=0;mi2<12;mi2++){ (function(i){ var hr=sv(s,"rect",{x:X(i)-(R-L)/24,y:0,width:(R-L)/12,height:B+16,"class":"bps-hit"});
+        hr.addEventListener("pointerenter",function(e){ if(e.pointerType==="mouse") showM(i); });
+        hr.addEventListener("click",function(e){ e.stopPropagation(); if(cur===i) hideM(); else showM(i); }); })(mi2); }
+      s.addEventListener("pointerleave",function(e){ if(e.pointerType==="mouse") hideM(); });
       "JFMAMJJASOND".split("").forEach(function(m,i){ sv(s,"text",{x:X(i),y:B+13,"text-anchor":"middle","font-size":"9.5","font-weight":"700",fill:col("--bps-mut")},m); });
       sv(s,"text",{x:(L+R)/2,y:H-2,"text-anchor":"middle","font-size":"8.5",fill:col("--bps-mut")},"Average year in habitat · rain per month");
-      var wrap=el("div","bps-spark"); wrap.appendChild(s);
+      var wrap=el("div","bps-spark"); wrap.appendChild(s); wrap.appendChild(tip);
       var lgd=el("div","bps-leg");
       [["--bps-hot","Avg high"],["--bps-cool","Avg low"],["--bps-p90","Hot days (p90)","is-dash"],["--bps-rain","Rain","is-bar"]].forEach(function(p){
         var sp=el("span"); var i=el("i",p[2]||null); i.style.background=col(p[0]); sp.appendChild(i); sp.appendChild(document.createTextNode(p[1])); lgd.appendChild(sp); });
@@ -753,7 +914,7 @@ details.bps-seo a{color:#e9b949}
       have.forEach(function(x){
         var b=bandOf(x.band), h=0; for(var i=0;i<x.id.length;i++) h=(h*31+x.id.charCodeAt(i))>>>0;
         var jy=((h%1000)/1000-.5)*0.62, cx=X(x.clim.p90), cy=Y(b.lvl+jy);
-        var match=matchQ(x,v) && (!cellSel || cellSel.ids.indexOf(x.id)>-1), isSel=x.id===sel;
+        var match=visible(x,v) && (!cellSel || cellSel.ids.indexOf(x.id)>-1), isSel=x.id===sel;
         var dot=n("circle",{cx:cx,cy:cy,r:isSel?8:5.5,fill:col(b.c),stroke:isSel?"#fff":col("--bps-card"),"stroke-width":isSel?2.2:1.4,
           opacity:match?1:.15,style:"cursor:pointer"}); if(isSel) dot.setAttribute("filter","url(#bps-glow)");
         sv(dot,"title",{},x.name+" · "+x.band+" · ≈"+deg(x.clim.p90));
@@ -780,21 +941,24 @@ details.bps-seo a{color:#e9b949}
     function emptyDetail(){
       det.innerHTML=""; det.style.removeProperty("--b");
       var e=el("div","bps-empty"); e.innerHTML=sundew(); e.appendChild(el("b",null,"Pick a species"));
-      e.appendChild(document.createTextNode("Search, tap the map, or tap any name to see photos, habitat, soil and summer heat."));
+      e.appendChild(document.createTextNode("Search, tap the map, or tap any name to see photos, habitat, soil and summer heat. Tap a name again to go back to all species."));
       det.appendChild(e);
     }
     function closeSheet(){ det.classList.remove("is-open"); }
     document.addEventListener("click",function(e){
-      if(!det.classList.contains("is-open") || det.contains(e.target) || document.querySelector(".bps-lb")) return;
+      if(!det.classList.contains("is-open") || !e.target.isConnected || det.contains(e.target) || document.querySelector(".bps-lb")) return;
       if(e.target.closest && (e.target.closest(".bps-chip") || e.target.closest(".bps-mini") || plot.contains(e.target) || mapEl.contains(e.target))) return;
       closeSheet();
     });
-    document.addEventListener("keydown",function(e){ if(e.key==="Escape" && !document.querySelector(".bps-lb")) closeSheet(); });
+    document.addEventListener("keydown",function(e){ if(e.key!=="Escape" || document.querySelector(".bps-lb")) return;
+      if(det.classList.contains("is-open") && window.matchMedia("(max-width:860px)").matches && !root.classList.contains("is-wide")){ closeSheet(); return; }
+      if(root.classList.contains("is-wide")){ root.classList.remove("is-wide"); if(sel) renderDetail(find(sel),true); return; }
+      if(sel||cellSel||fColor||fSize||q.value) clearAll(); });
     var ty=null;
     det.addEventListener("touchstart",function(e){ ty = (det.scrollTop<=0 && !(e.target.closest && e.target.closest(".bps-stage,.bps-thumbs,.bps-forms"))) ? e.touches[0].clientY : null; },{passive:true});
     det.addEventListener("touchend",function(e){ if(ty!=null && e.changedTouches[0].clientY-ty>70) closeSheet(); ty=null; },{passive:true});
 
-    buildMap(); setUnit(unit); emptyDetail(); drawMap(); loadGallery();
+    buildMap(); setUnit(unit); emptyDetail(); drawMap(); loadGallery(); loadFlowers();
   }
 
   function track(evt, label){ try{ if(window.gtag) window.gtag("event", evt, {species: label}); }catch(e){} }
