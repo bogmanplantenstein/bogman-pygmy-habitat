@@ -43,7 +43,7 @@
       <li>Rainfall, monthly highs and lows: <a href="http://www.bom.gov.au/climate/averages/" target="_blank" rel="noopener">Australian Bureau of Meteorology</a> long-term averages from 27 stations, weighted to each species' records.</li>
       <li>Dry months: months where average rainfall (mm) is less than twice the average temperature (°C), the standard Bagnouls–Gaussen test. 5–6 dry months is a dry summer; 7 or more is a long, dry summer.</li>
       <li>Climate uses research-grade records only, inside the species' native range.</li>
-      <li>Flowers: colours and markings reviewed by Bogman Plantenstein against FloraBase, Fierce Flora and published descriptions; flowering months from <a href="https://florabase.dbca.wa.gov.au/" target="_blank" rel="noopener">FloraBase</a> (WA Herbarium descriptive catalogue) and Fierce Flora; petal lengths from published species descriptions where available. Size classes use petal length (small under 4 mm, medium 4–7 mm, large over 7 mm) or, where only a flower width is published, small under 10 mm, medium 10–16 mm, large over 16 mm. Species without a published measurement are left out of the size filter.</li>
+      <li>Flowers: colors and markings reviewed by Bogman Plantenstein against FloraBase, Fierce Flora and published descriptions; flowering months from <a href="https://florabase.dbca.wa.gov.au/" target="_blank" rel="noopener">FloraBase</a> (WA Herbarium descriptive catalog) and Fierce Flora; petal lengths from published species descriptions where available. Size classes use petal length (small under 4 mm, medium 4–7 mm, large over 7 mm) or, where only a flower width is published, small under 10 mm, medium 10–16 mm, large over 16 mm. Species without a published measurement are left out of the size filter.</li>
       <li>Photos: cultivated plants from the <a href="https://www.burymeinthebog.com/species" target="_blank" rel="noopener">Bogman Gallery</a>. Wild photos load from iNaturalist, credited to each photographer; only openly licensed photos (CC0, CC BY, CC BY-SA) are shown.</li>
     </ul>
   </details>
@@ -131,6 +131,17 @@
 .bps-colh small{display:block;color:var(--bps-mut);font-size:11.5px;font-weight:400;line-height:1.3;margin-top:1px}
 .bps-colh .bps-n{font-size:11.5px;font-weight:700;color:var(--bps-mut);background:var(--bps-el);border-radius:999px;padding:1px 8px;font-variant-numeric:tabular-nums}
 .bps-drop{width:16px;height:20px;flex:none;margin-top:1px}
+.bps-more{display:none}
+@media (max-width:640px){
+  .bps-colh{flex-wrap:wrap;cursor:pointer;-webkit-tap-highlight-color:transparent;user-select:none}
+  .bps-more{display:flex;align-items:center;justify-content:center;gap:6px;flex:0 0 100%;width:100%;margin-top:8px;padding:6px 10px;border-radius:999px;
+    border:1px solid color-mix(in srgb,var(--b) 45%,var(--bps-line));color:var(--b);font-size:12.5px;font-weight:700}
+  .bps-more::after{content:"";width:6px;height:6px;border-right:2px solid currentColor;border-bottom:2px solid currentColor;transform:rotate(-135deg) translate(-1px,-1px);transition:transform .2s}
+  .bps-col.is-shut .bps-more::after{transform:rotate(45deg) translate(-1px,-1px)}
+  .bps-col.is-shut .bps-chips{display:none}
+  .bps-col.is-shut .bps-colh{padding-bottom:11px}
+  .bps-colh:focus-visible{outline:2px solid var(--bps-acc);outline-offset:-2px}
+}
 .bps-chips{display:flex;flex-wrap:wrap;gap:6px;padding:4px 10px 12px}
 .bps .bps-chip{display:inline-flex;align-items:center;gap:6px;border:1px solid transparent;background:var(--bps-el);color:var(--bps-fg);border-radius:999px;padding:3px 11px 3px 4px;
   font-family:var(--bps-serif);font-size:14px;font-style:italic;font-weight:500;line-height:1.35;
@@ -270,7 +281,7 @@ details.bps-seo a{color:#e9b949}
 @media (max-width:1040px){ .bps-hero{grid-template-columns:1fr} .bps-mapside{display:grid;grid-template-columns:1fr 1fr;gap:10px} }
 @media (max-width:860px){
   .bps-body{grid-template-columns:1fr}
-  .bps-shelf{grid-template-columns:1fr 1fr}
+  .bps-shelf{grid-template-columns:1fr 1fr;align-items:start}
   .bps-detail{position:fixed;left:0;right:0;bottom:0;top:auto;z-index:9999;max-height:84vh;overflow-y:auto;overscroll-behavior:contain;border-radius:18px 18px 0 0;
     border-bottom:0;transform:translateY(110%);visibility:hidden;transition:transform .25s cubic-bezier(.2,.8,.2,1),visibility 0s .25s,box-shadow .25s;
     padding:24px max(16px,env(safe-area-inset-right,0px)) calc(18px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px))}
@@ -305,7 +316,8 @@ details.bps-seo a{color:#e9b949}
   var INAT_LIC = ["cc0","cc-by","cc-by-sa"];        // openly licensed for commercial sites; add "cc-by-nc" etc. to widen
   var MAP_URL = "https://www.burymeinthebog.com/map?sp=";
   var SHOP_URL = "/shop";
-  var SHOW_DORM = false;                            // summer-dormancy flag: data kept, display off
+  var SHOW_DORM = false;
+  var SHOW_MARKS = false, SHOW_SIZE = false;          // flower filter rows: markings and size hidden for now (data kept)                            // summer-dormancy flag: data kept, display off
   var BANDS = [
     {k:"Dry",     c:"--bps-dry",     d:"Deep sand or gravel summits; drains fast", lvl:1},
     {k:"Drained", c:"--bps-drained", d:"Laterite, loam or clayey sand; free-draining", lvl:2},
@@ -329,7 +341,7 @@ details.bps-seo a{color:#e9b949}
     var T = D.taxa, M = D.map, sel = null, view = "shelf", cellSel = null, GAL = {}, INAT = {}, FL = {}, fColor = null, fSize = null, fMark = null;
     var COLORS = [["white","White","#f4efe2"],["pink","Pink","#e98fb2"],["red","Red","#cf4a3c"],["orange","Orange","#ef8a35"],["yellow","Yellow","#ecd25b"],["purple","Purple","#a56cc8"]];
     var SIZES = [["S","Small",6],["M","Medium",9],["L","Large",12]];
-    var MARKS = [["dark","Dark centre"],["two","Two-tone"],["spot","Basal spot"],["streak","Streaks or veins"]];
+    var MARKS = [["dark","Dark center"],["two","Two-tone"],["spot","Basal spot"],["streak","Streaks or veins"]];
     var unit = pickUnit();
     var $ = function(s){return root.querySelector(s);};
     var shelf=$("#bps-shelf"), plot=$("#bps-plot"), det=$("#bps-detail"), q=$("#bps-q"), mapEl=$("#bps-map"), side=$("#bps-mapside"), filt=$("#bps-filter"), resetB=$("#bps-reset"), flowEl=$("#bps-flowers");
@@ -407,8 +419,8 @@ details.bps-seo a{color:#e9b949}
         if(g.children.length>1) flowEl.appendChild(g);
       }
       grp("Flower", COLORS, fColor, function(v){ fColor=v; });
-      grp("Markings", MARKS, fMark, function(v){ fMark=v; });
-      grp("Size", SIZES, fSize, function(v){ fSize=v; });
+      if(SHOW_MARKS) grp("Markings", MARKS, fMark, function(v){ fMark=v; });
+      if(SHOW_SIZE) grp("Size", SIZES, fSize, function(v){ fSize=v; });
       flowEl.hidden=!any;
     }
     function markIcon(k){ // tiny 5-petal flower showing the marking
@@ -430,13 +442,37 @@ details.bps-seo a{color:#e9b949}
     }
 
     // ---- shelf
-    var chips = {};
+    var chips = {}, COLS = [], lastF = "";
+    function narrow(){ return window.matchMedia("(max-width:640px)").matches; }
+    function filtActive(){ return !!(norm(q.value) || cellSel || fColor || fSize || fMark); }
+    function paintCol(o){
+      var n=o.ids.length, m=o.ids.filter(function(id){ var x=find(id); return visible(x) && !(cellSel && cellSel.ids.indexOf(id)<0); }).length, act=filtActive();
+      o.el.classList.toggle("is-shut", !o.open);
+      o.head.setAttribute("aria-expanded", String(o.open));
+      o.more.textContent = o.open ? "Hide species" : act ? (m ? "Show "+m+" match"+(m>1?"es":"") : "No matches") : "Show all "+n+" species";
+    }
+    function syncCols(){
+      var key=[norm(q.value), cellSel&&cellSel.k, fColor, fSize, fMark].join("|");
+      if(key!==lastF){
+        var act=filtActive();
+        COLS.forEach(function(o){ o.open = act ? o.ids.some(function(id){ var x=find(id); return visible(x) && !(cellSel && cellSel.ids.indexOf(id)<0); }) : (sel ? o.ids.indexOf(sel)>-1 : false); });
+        lastF=key;
+      }
+      COLS.forEach(paintCol);
+    }
     BANDS.forEach(function(b){
       var c=el("section","bps-col"), h=el("div","bps-colh"); c.style.setProperty("--b","var("+b.c+")");
       h.appendChild(drop(b.lvl, col(b.c)));
       var t=el("div"); t.appendChild(el("b",null,b.k)); t.appendChild(el("small",null,b.d)); h.appendChild(t);
       var list=T.filter(function(x){return x.band===b.k;}).sort(function(a,b2){return a.hyb-b2.hyb || short(a).localeCompare(short(b2));});
       h.appendChild(el("span","bps-n",String(list.length)));
+      var more=el("span","bps-more"); h.appendChild(more);
+      h.setAttribute("role","button"); h.setAttribute("tabindex","0");
+      var colObj={el:c, head:h, more:more, ids:list.map(function(x){return x.id;}), open:false};
+      COLS.push(colObj); c.classList.add("is-shut");
+      function tog(){ if(!narrow()) return; colObj.open=!colObj.open; paintCol(colObj); track(colObj.open?"col_open":"col_close", b.k); }
+      h.addEventListener("click",tog);
+      h.addEventListener("keydown",function(e){ if(e.key==="Enter"||e.key===" "){ e.preventDefault(); tog(); } });
       c.appendChild(h);
       var wrap=el("div","bps-chips");
       list.forEach(function(x){
@@ -451,7 +487,7 @@ details.bps-seo a{color:#e9b949}
     function applyDim(){
       var v=norm(q.value);
       T.forEach(function(x){ if(chips[x.id]) chips[x.id].classList.toggle("is-dim", !visible(x,v) || !!(cellSel && cellSel.ids.indexOf(x.id)<0)); });
-      updateReset();
+      syncCols(); updateReset();
     }
 
     // ---- search
@@ -485,7 +521,7 @@ details.bps-seo a{color:#e9b949}
     function setSel(id){ sel=id; Object.keys(chips).forEach(function(k){chips[k].classList.toggle("is-sel",k===id);}); }
     function select(id){
       if(cellSel && cellSel.ids.indexOf(id)<0) clearCell();
-      setSel(id); renderDetail(find(id)); det.classList.add("is-open");
+      setSel(id); COLS.forEach(function(o){ if(o.ids.indexOf(id)>-1 && !o.open){ o.open=true; paintCol(o); } }); renderDetail(find(id)); det.classList.add("is-open");
       drawMap(); if(view==="plot") drawPlot();
       updateReset(); track("species_view", id);
     }
@@ -581,14 +617,8 @@ details.bps-seo a{color:#e9b949}
         cellSel.ids.map(find).sort(function(a,b2){return short(a).localeCompare(short(b2));}).forEach(function(t){ var mb=el("button",null,short(t)); mb.type="button"; mb.addEventListener("click",function(){select(t.id);}); mini.appendChild(mb); });
         now.appendChild(mini);
         var cb=el("button","bps-x","Clear"); cb.type="button"; cb.addEventListener("click",clearCell); now.appendChild(cb);
-      } else {
-        now.appendChild(el("h4",null,"Pygmy hotspots"));
-        var rich=el("div","bps-rich"), s=document.createElementNS(NS,"svg"); s.setAttribute("width","46"); s.setAttribute("height","20"); s.setAttribute("aria-hidden","true");
-        [[6,"#f1ead7",4.5],[19,"#e7cf8a",6.5],[36,"#e9b949",8.5]].forEach(function(p){ sv(s,"circle",{cx:p[0],cy:10,r:p[2],fill:p[1],stroke:"#17150e","stroke-width":1}); });
-        rich.appendChild(s); rich.appendChild(el("span",null,"Species per 25 km square. Tap one to list them."));
-        now.appendChild(rich);
-      }
-      side.appendChild(now);
+      } else now=null;
+      if(now) side.appendChild(now);
       var kg=el("div"); kg.appendChild(el("h4",null,"Climate zones (Köppen)"));
       var ul=el("ul","bps-kg");
       M.koppen.forEach(function(z){ var li=el("li"), i=el("i"); i.style.background=z.rgb; li.appendChild(i); li.appendChild(el("code",null,z.c)); li.appendChild(el("span",null,z.n)); ul.appendChild(li); });
@@ -774,10 +804,10 @@ details.bps-seo a{color:#e9b949}
       if(fl && (fl.colors.length || fl.petal || fl.diam || fl.months)){
         var fs=el("span","bps-fl");
         fl.colors.forEach(function(c){ var cc=COLORS.filter(function(z){return z[0]===c;})[0]; if(!cc) return; var it=el("i"), dt=el("span","bps-fdot"); dt.style.background=cc[2]; it.appendChild(dt); it.appendChild(document.createTextNode(cc[1])); fs.appendChild(it); });
-        var bits=[], ML={dark:"dark centre",two:"two-tone petals",spot:"spot at petal base",streak:"streaks or veins"};
+        var bits=[], ML={dark:"dark center",two:"two-tone petals",spot:"spot at petal base",streak:"streaks or veins"};
         var mk=fl.traits.filter(function(t){return ML[t];}).map(function(t){return ML[t];});
         if(mk.length) bits.push(mk.join(", ").replace(/^./,function(c){return c.toUpperCase();}));
-        if(fl.traits.indexOf("varies")>-1) bits.push("colour varies between forms");
+        if(fl.traits.indexOf("varies")>-1) bits.push("color varies between forms");
         if(fl.note && !mk.length) bits.push(fl.note.charAt(0).toUpperCase()+fl.note.slice(1));
         if(fl.petal) bits.push("petals "+(fl.petalRaw.charAt(0)==="-" ? "up to "+fl.petal[1] : fl.petal[0]===fl.petal[1] ? fl.petal[0] : fl.petal[0]+"–"+fl.petal[1])+" mm long");
         if(fl.diam) bits.push((fl.sizeNote&&/approx/.test(fl.sizeNote)?"about ":"")+(fl.diam[0]===fl.diam[1]?fl.diam[0]:fl.diam[0]+"–"+fl.diam[1])+" mm across");
@@ -975,7 +1005,7 @@ details.bps-seo a{color:#e9b949}
     det.addEventListener("touchstart",function(e){ ty = (det.scrollTop<=0 && !(e.target.closest && e.target.closest(".bps-stage,.bps-thumbs,.bps-forms"))) ? e.touches[0].clientY : null; },{passive:true});
     det.addEventListener("touchend",function(e){ if(ty!=null && e.changedTouches[0].clientY-ty>70) closeSheet(); ty=null; },{passive:true});
 
-    buildMap(); setUnit(unit); emptyDetail(); drawMap(); loadGallery(); loadFlowers();
+    syncCols(); buildMap(); setUnit(unit); emptyDetail(); drawMap(); loadGallery(); loadFlowers();
   }
 
   function track(evt, label){ try{ if(window.gtag) window.gtag("event", evt, {species: label}); }catch(e){} }
