@@ -317,7 +317,8 @@ details.bps-seo a{color:#e9b949}
   var MAP_URL = "https://www.burymeinthebog.com/map?sp=";
   var SHOP_URL = "/shop";
   var SHOW_DORM = false;
-  var SHOW_MARKS = false, SHOW_SIZE = false;          // flower filter rows: markings and size hidden for now (data kept)                            // summer-dormancy flag: data kept, display off
+  var SHOW_MARKS = false, SHOW_SIZE = false;
+  var SHOW_PLOT = false;                              // "Moisture × heat" tab hidden for now          // flower filter rows: markings and size hidden for now (data kept)                            // summer-dormancy flag: data kept, display off
   var BANDS = [
     {k:"Dry",     c:"--bps-dry",     d:"Deep sand or gravel summits; drains fast", lvl:1},
     {k:"Drained", c:"--bps-drained", d:"Laterite, loam or clayey sand; free-draining", lvl:2},
@@ -503,6 +504,7 @@ details.bps-seo a{color:#e9b949}
     q.addEventListener("keydown", function(e){ if(e.key==="Escape"){ q.value=""; q.dispatchEvent(new Event("input")); } });
 
     // ---- view + units
+    if(!SHOW_PLOT){ var tl=root.querySelector('.bps-bar [role="tablist"]'); if(tl) tl.hidden=true; }
     root.querySelectorAll("[data-view]").forEach(function(b){
       b.addEventListener("click",function(){
         view=b.getAttribute("data-view");
@@ -632,7 +634,7 @@ details.bps-seo a{color:#e9b949}
       galP=fetch(GALLERY_URL).then(function(r){ if(!r.ok) throw 0; return r.json(); }).then(function(g){
         var ids={}; T.forEach(function(x){ ids[x.id.replace(/^x-/,"")]=x.id; });
         (g.taxa||[]).forEach(function(t){
-          if(t.genus!=="Drosera" || t.group!=="Pygmy" || (t.parents&&t.parents.length) || /['"]|hybrids/i.test(t.displayName||"")) return;
+          if(t.genus!=="Drosera" || (t.group && t.group!=="Pygmy") || (t.parents&&t.parents.length) || /['"]|hybrids/i.test(t.displayName||"")) return;
           var key=(t.displayName||"").replace(/^Drosera\s+/,"").replace(/^(×|x)\s+/,"").trim().toLowerCase(), id=ids[key];
           if(!id) return;
           var forms=(t.forms||[]).filter(function(f){ return f.entryType!=="hybrid" && !/×/.test(f.label||"") && f.photos && f.photos.length; })
