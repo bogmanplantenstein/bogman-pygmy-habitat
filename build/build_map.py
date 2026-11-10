@@ -62,16 +62,18 @@ if 'micra' in byid:                               # Priority One: type locality 
 # equal-area-ish: scale longitude by cos(mid-lat) so the image isn't stretched
 midlat = math.radians((N + S) / 2); PX = 110                       # px per degree latitude
 w = int(round((E - W) * math.cos(midlat) * PX)); h = int(round((N - S) * PX))
-small = np.array(Image.fromarray(kg).resize((w, h), Image.NEAREST))
-rgba = np.zeros((h, w, 4), np.uint8)
-for code, (_, _, c) in KOPPEN.items():
-    m = small == code; rgba[m, :3] = c; rgba[m, 3] = 255
-land = small > 0
+IMG_SCALE = 2          # image pixels per map unit; 2x keeps zone edges crisp when the widget zooms in (~0.5 km/px vs 1 km source)
 os.makedirs(os.path.join(ROOT, 'public', 'map'), exist_ok=True)
-Image.fromarray(rgba, 'RGBA').quantize(colors=16, method=Image.FASTOCTREE).save(os.path.join(ROOT, 'public', 'map', 'sw-wa-koppen.png'), optimize=True)
+for sc, name in ((1, 'sw-wa-koppen.png'), (IMG_SCALE, 'sw-wa-koppen@2x.png')):
+    big = np.array(Image.fromarray(kg).resize((w * sc, h * sc), Image.NEAREST))
+    rgba = np.zeros((h * sc, w * sc, 4), np.uint8)
+    for code, (_, _, c) in KOPPEN.items():
+        m = big == code; rgba[m, :3] = c; rgba[m, 3] = 255
+    Image.fromarray(rgba, 'RGBA').quantize(colors=16, method=Image.FASTOCTREE).save(os.path.join(ROOT, 'public', 'map', name), optimize=True)
+small = np.array(Image.fromarray(kg).resize((w, h), Image.NEAREST))
 present = {int(k) for k in np.unique(small) if k in KOPPEN}
 D['map'] = dict(
-    img='map/sw-wa-koppen.png', w=w, h=h, ext=[W, E, N, S], g=G, cos=round(math.cos(midlat), 5),
+    img='map/sw-wa-koppen.png', img2='map/sw-wa-koppen@2x.png', w=w, h=h, ext=[W, E, N, S], g=G, cos=round(math.cos(midlat), 5),
     koppen=[dict(c=KOPPEN[k][0], n=KOPPEN[k][1], rgb='#%02x%02x%02x' % KOPPEN[k][2]) for k in sorted(present, key=lambda k: [6, 4, 7, 8, 9, 15].index(k))],
     towns=[['Perth', -31.95, 115.86], ['Geraldton', -28.78, 114.61], ['Bunbury', -33.33, 115.64], ['Albany', -35.02, 117.88],
            ['Esperance', -33.86, 121.89], ['Kalgoorlie', -30.75, 121.47], ['Narrogin', -32.93, 117.18]],
