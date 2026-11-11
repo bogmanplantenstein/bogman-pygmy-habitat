@@ -615,7 +615,9 @@
         if(bits.length) fs.appendChild(el("em",null,bits.join(" · ")));
         row("Flowers", fs);
       }
-      row("Habitat", x.hab); row("Range", x.dist); row("Soil type", x.soil ? x.soil.charAt(0).toUpperCase()+x.soil.slice(1) : null);
+      row("Habitat", x.hab); row("Range", x.dist);
+      var REST={bud:"Rests through the dry summer as a tight dormant bud.", slow:"Rarely fully dormant: keeps growing slowly through summer while there is some moisture deeper in the soil."};
+      if(x.rest){ var rt=(REST[x.rest]||""); if(x.restNote) rt = rt ? rt+" "+x.restNote : x.restNote; row("Summer in habitat", rt); } row("Soil type", x.soil ? x.soil.charAt(0).toUpperCase()+x.soil.slice(1) : null);
       if(x.kz && x.kz.length){ var kz=el("span"); x.kz.forEach(function(z,i){ if(i) kz.appendChild(document.createTextNode(" · ")); kz.appendChild(el("code",null,z[0])); kz.appendChild(document.createTextNode(KG_NAME[z[0]]+(x.kz.length>1?" ("+z[1]+"%)":""))); }); row("Climate zone", kz); }
       d.appendChild(dl);
       if(SHOW_DORM && x.dorm){ d.appendChild(el("p","bps-note","Growers often report this species going dormant in summer.")); }

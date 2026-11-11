@@ -8,6 +8,7 @@ python3 build_clim.py      # climate-map hot extremes (research-grade, in-range 
 python3 build_bom.py       # BOM station rainfall, temps, dry months
 python3 widget_data.py     # species/hybrid text, moisture scores, climate merge
 python3 widget_patch.py    # Fierce Flora, D. micra label, dormancy flags, sources
+python3 dotw_patch.py      # Drosera of the World: habitat/range edits, summer-rest type
 python3 build_map.py       # Köppen base map, coarse range cells, iNat photo obs ids
 cp ../work/pygmy-data.json ../public/pygmy-data.json
 python3 make_widget.py     # public/widget.js + embed/squarespace-code-block.html
