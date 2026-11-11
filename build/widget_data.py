@@ -33,7 +33,7 @@ S={
 'hyperostigma':(2,"laterite","Darling Range: Bannister, Gidgegannup, Lesmurdie, Parkerville and The Lakes.","Laterite mixed with silica sand in light open forest.",None),
 'lasiantha':(2,"laterite","Porongurup Range and Mount Lindesay, near Albany and Denmark.","Loamy laterite on high scree slopes in low jarrah forest.",None),
 'leioblastus':(2,"pale sand","The Cataby region.","Silica sand with leaf-litter humus and laterite pebbles, under low heath.",None),
-'leucoblasta':(3,"pale sand","York, Brookton, Cranbrook, Arthur River and Esperance.","Clayey sand and laterite between low shrubs in heath; soils often carry organic matter and peat.",None),
+'leucoblasta':(2.5,"pale sand","York, Brookton, Cranbrook, Arthur River and Esperance.","Clayey sand and laterite between low shrubs in heath; soils often carry organic matter and peat.",None),
 'leucostigma':(4,"pale sand","Cataby region, south-east to Mogumber.","Sandy soils on the edges of winter-wet depressions.",None),
 'mannii':(3.5,"peat","Gleneagle, Boulder Rock and toward Jarrahdale.","Loam in jarrah forest, peaty sand on winter-wet seeps, and granite-outcrop aprons.",None),
 'micra':(4.5,"peat","City of Swan, Perth (Swan Coastal Plain). Priority One flora.","Peat with sand mixed through. One parent of the swamp hybrid D. × badgerupii.","Few records; no climate-map data."),
